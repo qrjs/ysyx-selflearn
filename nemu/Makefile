@@ -12,6 +12,7 @@
 #
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
+NEMU_HOME := /home/icse/Desktop/ysyx-workbench/nemu
 
 # Sanity check
 ifeq ($(wildcard $(NEMU_HOME)/src/nemu-main.c),)
@@ -50,6 +51,10 @@ CFLAGS_BUILD += $(if $(CONFIG_CC_ASAN),-fsanitize=address,)
 CFLAGS_TRACE += -DITRACE_COND=$(if $(CONFIG_ITRACE_COND),$(call remove_quote,$(CONFIG_ITRACE_COND)),true)
 CFLAGS  += $(CFLAGS_BUILD) $(CFLAGS_TRACE) -D__GUEST_ISA__=$(GUEST_ISA)
 LDFLAGS += $(CFLAGS_BUILD)
+CFLAGS_BUILD += -Og -ggdb3										
+CFLAGS += $(CFLAGS_BUILD)
+print-cflags:													@echo	$(CFLAGS)											@echo	$(CFLAGS_BUILD)
+
 
 # Include rules for menuconfig
 include $(NEMU_HOME)/scripts/config.mk
@@ -61,3 +66,4 @@ else
 # Include rules to build NEMU
 include $(NEMU_HOME)/scripts/native.mk
 endif
+V=1
