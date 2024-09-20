@@ -1,0 +1,6 @@
+module top(
+    
+);
+    
+endmodule //top
+

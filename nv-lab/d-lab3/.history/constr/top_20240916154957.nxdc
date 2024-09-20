@@ -1,0 +1,6 @@
+top =top
+a (SW3,SW2,SW1,SW0)
+b (SW7,SW6,SW5,SW4)
+alu_ch (SW10,SW9,SW8)
+alu_f (LD15,LD14,LD13,LD12)
+over_f 

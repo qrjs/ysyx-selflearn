@@ -1,0 +1,6 @@
+top =top
+din (SW7,SW7,SW6,SW5,SW4,SW3,SW2,SW1,SW0)
+shamt (SW10,SW9,SW8)
+LR SW11
+AL SW12
+dout (LD7,LD6,LD5,LD4,LD)

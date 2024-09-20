@@ -1,0 +1,1 @@
+mux41 1_3(.sel(LR,shamt[2]),.x0(w9),.x1(w0),.x2(w9),.x3(din[3],.f(dout[7]));
