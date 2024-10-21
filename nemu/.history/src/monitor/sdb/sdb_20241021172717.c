@@ -62,13 +62,6 @@ static int cmd_si(char *args){
   cpu_exec(step);
   return 0;
 }
-static int cmd_info(char *args){
-    if(args == NULL)
-        printf("No args.\n");
-    else if(strcmp(args, "r") == 0)
-        isa_reg_display();
-    return 0;
-}
 
 static int cmd_help(char *args);
 
@@ -80,8 +73,7 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-  {"si","step instruction",cmd_si},
-  {"info"," Print register status or print watchpoint information",cmd_info}
+  {"si",""}
   /* TODO: Add more commands */
 
 };

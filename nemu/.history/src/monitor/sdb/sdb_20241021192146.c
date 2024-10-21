@@ -67,6 +67,8 @@ static int cmd_info(char *args){
         printf("No args.\n");
     else if(strcmp(args, "r") == 0)
         isa_reg_display();
+    else if(strcmp(args, "w") == 0)
+        sdb_watchpoint_display();
     return 0;
 }
 
@@ -81,7 +83,7 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   {"si","step instruction",cmd_si},
-  {"info"," Print register status or print watchpoint information",cmd_info}
+  {"info"," Print register status or print watchpoint information","cmd_info"}
   /* TODO: Add more commands */
 
 };

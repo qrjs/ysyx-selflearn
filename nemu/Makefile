@@ -44,16 +44,27 @@ SRCS = $(filter-out $(SRCS-BLACKLIST-y),$(SRCS-y))
 ifneq ($(CONFIG_CC),)
 CC = $(call remove_quote,$(CONFIG_CC))
 endif
-CFLAGS_BUILD += $(call remove_quote,$(CONFIG_CC_OPT))
+
+# 清空 CFLAGS_BUILD 的初始值
+CFLAGS_BUILD := $(call remove_quote,$(CONFIG_CC_OPT))
 CFLAGS_BUILD += $(if $(CONFIG_CC_LTO),-flto,)
 CFLAGS_BUILD += $(if $(CONFIG_CC_DEBUG),-Og -ggdb3,)
 CFLAGS_BUILD += $(if $(CONFIG_CC_ASAN),-fsanitize=address,)
+
+# 添加调试信息和优化级别
+CFLAGS_BUILD += -g -O0  
+
 CFLAGS_TRACE += -DITRACE_COND=$(if $(CONFIG_ITRACE_COND),$(call remove_quote,$(CONFIG_ITRACE_COND)),true)
+
+# 组合所有标志
 CFLAGS  += $(CFLAGS_BUILD) $(CFLAGS_TRACE) -D__GUEST_ISA__=$(GUEST_ISA)
+
+# 链接标志
 LDFLAGS += $(CFLAGS_BUILD)
-CFLAGS_BUILD += -Og -ggdb3										
-CFLAGS += $(CFLAGS_BUILD)
-print-cflags:													@echo	$(CFLAGS)											@echo	$(CFLAGS_BUILD)
+
+print-cflags: 
+	@echo $(CFLAGS)
+	@echo $(CFLAGS_BUILD)
 
 
 # Include rules for menuconfig
