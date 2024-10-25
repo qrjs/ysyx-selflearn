@@ -25,14 +25,14 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-  int length =sizeof(regs)/sizeof(regs[0]);
+  int length=sizeof(regs)/sizeof(regs[0]);
   for(int i=0;i<length;i++)
-   printf("reg$%s---->%d\n",regs[i],cpu.gpr[i]);
+  printf("reg$%s--->%d\n",regs[i],cpu.gpr[i]);
 }
 
 
 uint32_t isa_reg_str2val(const char *s, bool *success) {
-    *success=true;
+    *
 
     for(int i=0;i<32;i++)
     {   
@@ -46,9 +46,6 @@ uint32_t isa_reg_str2val(const char *s, bool *success) {
         }
     }
     printf("not find the register.\n");
-    
-    
-    *success=false;
     return 0;
     
 }
