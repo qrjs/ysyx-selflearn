@@ -230,8 +230,7 @@ static bool make_token(char *e) {
       return false;
     }
   }
-  return true;
-}
+  
 
 
 uint32_t char2int(char s[]);
