@@ -245,7 +245,7 @@ bool check_parentheses(int p,int q)
 
     for(int i=p;i<=q;i++)
     {
-      if(tokens[i].type==LPARE)par++;
+      if(tokens[i].type==)par++;
       else if(tokens[i].type==RPARE)par--;
 
 
