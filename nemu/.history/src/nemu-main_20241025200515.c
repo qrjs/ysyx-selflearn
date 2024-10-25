@@ -13,31 +13,3 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#include <common.h>
-
-void init_monitor(int, char *[]);
-void am_init_monitor();
-void engine_start();
-int is_exit_status_bad();
-
-int main(int argc, char *argv[]) {
-  /* Initialize the monitor. */
-#ifdef CONFIG_TARGET_AM
-  am_init_monitor();
-#else
-  int i=1;
-  do{
-    printf("argc[%d]=%s\n",i,argv[i-1]);
-    i+=1;
-  }while(i!=argc+1);
-  #ifdef CONFIG_TARGET_AM
-  printf("am_mode\n");
-  #endif
-  init_monitor(argc, argv);
-#endif
-
-  /* Start engine. */
-  engine_start();
-
-  return is_exit_status_bad();
-}
