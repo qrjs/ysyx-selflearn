@@ -46,9 +46,6 @@ uint32_t isa_reg_str2val(const char *s, bool *success) {
         }
     }
     printf("not find the register.\n");
-    
-    
-    *success=false;
     return 0;
     
 }

@@ -32,7 +32,7 @@ void isa_reg_display() {
 
 
 uint32_t isa_reg_str2val(const char *s, bool *success) {
-    *success=true;
+    *success=true
 
     for(int i=0;i<32;i++)
     {   
@@ -46,9 +46,6 @@ uint32_t isa_reg_str2val(const char *s, bool *success) {
         }
     }
     printf("not find the register.\n");
-    
-    
-    *success=false;
     return 0;
     
 }
