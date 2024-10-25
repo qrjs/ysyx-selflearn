@@ -402,7 +402,7 @@ uint32_t eval(int p,int q)
     {
       if(tokens[i].type==11)
       {
-       while(tokens[i].type!=10 || lpare_num!=1){
+       while(tokens[i].type!=10 || lpare_num!=1)
        if (tokens[i].type==11)
        lpare_num++;
        if(tokens[i].type==10)
@@ -410,7 +410,6 @@ uint32_t eval(int p,int q)
        if(i==0)
        break;
        i--;
-      }
       }
        if(!flag && tokens[i].type == 5 ){
                 flag = true;

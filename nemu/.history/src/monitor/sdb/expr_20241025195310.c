@@ -411,7 +411,6 @@ uint32_t eval(int p,int q)
        break;
        i--;
       }
-      }
        if(!flag && tokens[i].type == 5 ){
                 flag = true;
                 op = min(op,i);
