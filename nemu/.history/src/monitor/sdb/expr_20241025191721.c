@@ -390,7 +390,7 @@ uint32_t eval(int p,int q)
   {
     int lpare_num=0;
 
-    int op=65535;
+    int op=;
 
     int op_md=0;//mul or div
 
