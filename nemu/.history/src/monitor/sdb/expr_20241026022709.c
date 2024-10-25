@@ -231,10 +231,9 @@ static bool make_token(char *e) {
     }
   }
 
-  
+  return true;
 }
-return true;
-}
+
 
 uint32_t char2int(char s[]);
 void int2char(uint32_t num,char ret[]);
@@ -259,8 +258,7 @@ for (int i=0;i<tokens_len;i++)
     int tmp=isa_reg_str2val(tokens[i].str,&flag);
     if(flag){
       int2char(tmp, tokens[i].str); // transfrom the str --> $egx
-      }
-      else{
+	    }else{
     printf("Transfrom error. \n");
 		assert(0);
 	}
@@ -334,7 +332,7 @@ for (int i=0;i<tokens_len;i++)
     }
   }
 }
-  return tokens_len;
+return tokens_len;
 }
 
 

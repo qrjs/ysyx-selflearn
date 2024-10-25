@@ -231,9 +231,8 @@ static bool make_token(char *e) {
     }
   }
 
-  
+  return true;
 }
-return true;
 }
 
 uint32_t char2int(char s[]);
@@ -334,7 +333,7 @@ for (int i=0;i<tokens_len;i++)
     }
   }
 }
-  return tokens_len;
+return tokens_len;
 }
 
 

@@ -149,6 +149,7 @@ static bool make_token(char *e) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
+char *substr_start = e + position;
                 char *substr_start_reg = e + position + 1;
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
@@ -231,9 +232,7 @@ static bool make_token(char *e) {
     }
   }
 
-  
-}
-return true;
+  return true;
 }
 
 uint32_t char2int(char s[]);
@@ -259,8 +258,7 @@ for (int i=0;i<tokens_len;i++)
     int tmp=isa_reg_str2val(tokens[i].str,&flag);
     if(flag){
       int2char(tmp, tokens[i].str); // transfrom the str --> $egx
-      }
-      else{
+	    }else{
     printf("Transfrom error. \n");
 		assert(0);
 	}
@@ -334,7 +332,7 @@ for (int i=0;i<tokens_len;i++)
     }
   }
 }
-  return tokens_len;
+return tokens_len;
 }
 
 
