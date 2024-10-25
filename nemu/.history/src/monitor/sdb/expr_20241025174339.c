@@ -134,7 +134,7 @@ bool check_parentheses(int p,int q)
 }
 
 static bool make_token(char *e) {
-    for(int i=0;i<65535;i++)
+    for(int i=0;i<32;i++)
     {tokens[i].type=0;
      strcpy(tokens[i].str,"0");}
   int position = 0;
@@ -240,7 +240,7 @@ void int2char(uint32_t num,char ret[]);
 int pre_process(){
 //pre_process
 int tokens_len=0;
-for(int i=0;i<65535;i++)
+for(int i=0;i<31;i++)
 {
   if(tokens[i].type==0)
   break;
