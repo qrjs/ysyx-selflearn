@@ -213,7 +213,7 @@ static bool make_token(char *e) {
          tokens[nr_token].type=9;
         strncpy(tokens[nr_token].str, substr_start, substr_len);
 				tokens[nr_token].str[substr_len] = '\0';
-        nr_token++;
+        nr
 				break;
          default:
             printf("i = %d and No rules is com.\n", i);
