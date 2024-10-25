@@ -213,7 +213,7 @@ static bool make_token(char *e) {
             break;
          case 9:
                         tokens[nr_token].type = 9;
-                        strncpy(tokens[nr_token].str, substr_start, substr_len);
+                        strncpy(tokens[nr_token].str, su, substr_len);
                         nr_token++;
                         break; 
          default:
