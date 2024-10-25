@@ -131,9 +131,7 @@ static struct {
   { "info","r for the register,w for the watchpoint",cmd_info},
   { "x","Ask for the memory",cmd_x},
   { "p", "Calculate the expression", cmd_p },
-  { "si","Execute by step",cmd_si},
-  { "d", "Delete the watchpoint", cmd_d },
-  { "w", "Create the watchpoint", cmd_w }
+  { "si","Execute by step",cmd_si}
   
   
 
