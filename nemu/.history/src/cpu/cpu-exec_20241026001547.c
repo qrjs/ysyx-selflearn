@@ -17,8 +17,8 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
-#include </home/icse/Desktop/ysyx-workbench/nemu/src/monitor/sdb/watchpoint.h>
-#include </home/icse/Desktop/ysyx-workbench/nemu/src/monitor/sdb/sdb.h>
+#include </home/wangbaosen/ysyx/ysyx-workbench/nemu/src/monitor/sdb/watchpoint.h>
+#include </home/wangbaosen/ysyx/ysyx-workbench/nemu/src/monitor/sdb/sdb.h>
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -39,7 +39,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
-
+}
 
 for (int i = 0; i < NR_WP; i++) {
     if (wp_pool_flag(i)) {  // 检查第 i 个监视点是否有效
@@ -65,7 +65,7 @@ for (int i = 0; i < NR_WP; i++) {
         }
     }
 }
-}
+
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
@@ -113,11 +113,7 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
-
 void assert_fail_msg() {
-  #ifdef CONFIG_MTRACE
-  display_memory();
-  #endif
   isa_reg_display();
   statistic();
 }

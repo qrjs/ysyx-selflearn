@@ -12,7 +12,7 @@
 *
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
-#include "watchpoint.h"
+#include
 #include "sdb.h"
 
 #define NR_WP 32
@@ -43,7 +43,7 @@ void init_wp_pool() {
 }
 
 WP* new_wp(){
-  for(WP* p=free_;p->next!=NULL;p=p->next)
+  for(WP* p=free_;p->next!=NULL;p=p->next);
   {
     if(p->flag==false){
       p->flag=true;
@@ -77,56 +77,4 @@ void free_wp(WP *wp){
   }
 }
 
-int wp_pool_flag(int i){
-  return wp_pool[i].flag;
-}
-
-int wp_pool_old_value(int i){
-  return wp_pool[i].old_value;
-}
-
-void wp_pool_write_new_value(int i,int value){
-    wp_pool[i].new_value=value;
-    return;
-}
-
-char *wp_pool_expr(int i){
-  static char expr_str[100];
-  strcpy(expr_str,wp_pool[i].expr);
-  return expr_str;
-}
-
-void sdb_watchpoint_display(){
-    bool flag = true;
-    for(int i = 0 ; i < NR_WP ; i ++){
-        if(wp_pool[i].flag){
-            printf("Watchpoint.No: %d, expr = \"%s\", old_value = %d, new_value = %d\n",
-                    wp_pool[i].NO, wp_pool[i].expr,wp_pool[i].old_value, wp_pool[i].new_value);
-                flag = false;
-        }
-    }
-    if(flag) printf("No watchpoint now.\n");
-}
-
-
-void delete_watchpoint(int no){
-  for(int i=0;i<NR_WP;i++)
-  if(wp_pool[i].NO==no){
-    free_wp(&wp_pool[i]);
-    return;
-  }
-}
-
-void create_watchpoint(char* args) {
-    WP* p = new_wp(); // 从 free_ 中分配新的监视点
-    strcpy(p->expr, args); // 将表达式字符串复制到监视点中
-    bool success = false;
-    int tmp = expr(p->expr, &success); // 计算表达式
-    if(success) {
-        p->old_value = tmp; // 更新旧值
-        p->new_value = tmp; // 更新新值
-    } else {
-        printf("Invalid expression!\n"); // 表达式无效
-    }
-    printf("Create watchpoint No.%d success.\n", p->NO); // 输出创建成功消息
-}
+int wp_pool_flag()

@@ -118,6 +118,7 @@ void assert_fail_msg() {
   #ifdef CONFIG_MTRACE
   display_memory();
   #endif
+  #endif
   isa_reg_display();
   statistic();
 }
