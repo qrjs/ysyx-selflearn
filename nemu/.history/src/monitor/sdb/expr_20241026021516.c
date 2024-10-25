@@ -14,18 +14,32 @@
 ***************************************************************************************/
 
 #include <isa.h>
-#include <assert.h>
-#include <string.h>
-/* We use the POSIX regex functions to process regular expressions.
- * Type 'man regex' for more information about POSIX regex functions.
- */
+#include<assert.h>
 #include <regex.h>
+#include<string.h>
 
+
+int min (int a,int b)
+{
+  return a<b?a:b;
+}
 enum {
-  TK_NOTYPE = 256, TK_EQ,'+','-','*','/','(',')',LEQ,NEQ,OR,AND,'!',REG,HEX,NUM
-
-  /* TODO: Add more token types */
-
+  TK_NOTYPE = 256,
+  NUM=1,
+  HEX=2,
+  EQ=3,
+  NEQ=4,
+  OR=5,
+  AND=6,
+  LEQ=7,
+  GEQ=8,
+  REGISTER=9,
+  LPARE=10,
+  RPARE=11,
+  ADD=12,
+  SUB=13,
+  MUL=14,
+  DIV=15
 };
 
 static struct rule {
@@ -33,30 +47,29 @@ static struct rule {
   int token_type;
 } rules[] = {
 
-  /* TODO: Add more rules.
-   * Pay attention to the precedence level of different rules.
-   */
-
+  
   {" +", TK_NOTYPE},    // spaces
-  {"\\+", '+'},         // plus
-  {"\\=\\=", TK_EQ},        // equal
-  {"\\-",'-'},
-  {"\\*",'*'},
-  {"\\/",'/'},
+  {"\\+", ADD},         // plus
+  {"\\-",SUB},
+  {"\\*",MUL},
+  {"\\/",DIV},
 
-  {"\\(",L},
-  {"\\)",R},
+  {"\\(",LPARE},
+  {"\\)",RPARE},
 
-  {"\\<\\=",LEQ},
+  {"\\<\\=", LEQ},
+  {"\\>\\=",GEQ},
+  {"\\=\\=",EQ},        
   {"\\!\\=",NEQ},
 
-  {"\\|\\|",OR},
   {"\\&\\&",AND},
-  {"\\!",'!'},
+  {"\\|\\|",OR},
 
-  {"\\$[a-zA-Z]*[0-9]*",REG},
+  {"\\$[a-zA-Z]*[0-9]*",REGISTER},
+
   {"0[xX][0-9a-fA-F]+",HEX},
-  {"[0-9]*", NUM},
+
+  {"[0-9]*",NUM}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -148,79 +161,33 @@ static bool make_token(char *e)
         
                 position += substr_len;
 
-        /* TODO: Now a new token is recognized with rules[i]. Add codes
-         * to record the token in the array `tokens'. For certain types
-         * of tokens, some extra actions should be performed.
-         */
-        switch (rules[i].token_type) {
-          case'+':
-             tokens[nr_token++].type='+';
-             break;
-          case'-':
-             tokens[nr_token++].type='-';
-             break;
-          case'*':
-             tokens[nr_token++].type='*';
-             break;
-          case'/':
-             tokens[nr_token++].type='/';
-             break;
-          case 256:
-             break;
-          case '!'
-             tokens[nr_token++].type='!';
-             break;
-          case '('
-             tokens[nr_token++].type='(';
-             break;
-          case ')'
-             tokens[nr_token++].type=')';
-             break;
-          case TK_EQ:
-             tokens[nr_token++].type='==';
-             break;
-          case NEQ:
-             tokens[nr_token++].type='!=';
-             break;
-          case OR:
-             tokens[nr_token++].type='||';
-             break;
-          case AND:
-             tokens[nr_token++].type='&&';
-             break;
-          case LEQ:
-             tokens[nr_token++].type='<=';
-             break;
-          
-          
-          
+            
+                if (rules[i].token_type == TK_NOTYPE) break;
 
-//special// 
-          case NUM:
-             tokens[nr_token].type=NUM;
-             strncpy(tokens[nr_token].str,&e[position-substr_len],substr_len);
-             nr_token++;
-             break;
-          case HEX:
-             tokens[nr_token].type=HEX;
-             strncpy(tokens[nr_token].str,&e[position-substr_len],substr_len);
-             nr_token++;
-             break;
-          case REG:
-             tokens[nr_token].type=REG;
-             strncpy(tokens[nr_token].str,&e[position-substr_len],substr_len);
-             nr_token++;
-             break;
-          
-          
-          default: 
-          printf("i = %d and No rules here.\n", i);
-          break;
+                tokens[nr_token].type = rules[i].token_type;
+        
+                switch (rules[i].token_type) 
+                {
+                    case NUM:
+                    case HEX:
+                        strncpy(tokens[nr_token].str, substr_start, substr_len);
+                        tokens[nr_token].str[substr_len]='\0';
+                        break;
+                    case REGISTER:{
+                        strncpy(tokens[nr_token].str, substr_start_reg, substr_len - 1);
+                        tokens[nr_token].str[2]='\0';
+                        break; 
+                    }
+                    default:
+                        break;
+            
+                }
+
+                nr_token++;
+
+                break;
+            }
         }
-
-        break;
-      }
-    }
 
         if (i == NR_REGEX) 
         {
@@ -526,9 +493,9 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
-  /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+  int len;
+  *success=true;
+  len=pre_process();
+  
+  return eval(0,len-1);
 }
