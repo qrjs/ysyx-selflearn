@@ -402,10 +402,10 @@ uint32_t eval(int p,int q)
     {
       if(tokens[i].type==11)
       {
-       if(tokens[i].type!=10 || lpare_num!=1)
-       if (tokens[i].type==11)
+       if(tokens[i].type!=LPARE || lpare_num!=1)
+       if (tokens[i].type==RPARE)
        lpare_num++;
-       if(tokens[i].type==10)
+       if(tokens[i].type==LPARE)
        lpare_num--;
        if(i==0)break;
        i--;
