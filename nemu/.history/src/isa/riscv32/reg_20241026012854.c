@@ -12,11 +12,10 @@
 *
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
+
 #include <isa.h>
-#include <assert.h>
-#include <string.h>
 #include "local-include/reg.h"
-#include <stdint.h>
+
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
