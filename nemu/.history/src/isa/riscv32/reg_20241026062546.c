@@ -36,11 +36,11 @@ uint32_t isa_reg_str2val(const char *s, bool *success) {
 
     for(int i=0;i<32;i++)
     {   
-        if(strcmp(regs[i],s+1)==0){
+        if(strcmp(regs[i],s+)==0){
             
             return cpu.gpr[i];
         }
-        else if(strcmp("$pc",s+1)==0){
+        else if(strcmp("$pc",s+)==0){
             
             return cpu.pc;
         }

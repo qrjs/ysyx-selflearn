@@ -40,7 +40,7 @@ uint32_t isa_reg_str2val(const char *s, bool *success) {
             
             return cpu.gpr[i];
         }
-        else if(strcmp("$pc",s+1)==0){
+        else if(strcmp("$pc",s+)==0){
             
             return cpu.pc;
         }
