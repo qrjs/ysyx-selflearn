@@ -17,6 +17,7 @@
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <memory/paddr.h>
 #include "sdb.h"
 #include "watchpoint.h"
 
@@ -54,17 +55,20 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_help(char *args);
+
 static int cmd_si(char *args){
-  int step=0; 
-  if(args==NULL)
-    step=1;
+  int step=0;
+  if (args==NULL){
+      step=1;}
   else
-    sscanf(args,"%d",&step);
-  cpu_exec(step);
-  return 0;
+      {sscanf(args,"%d",&step);
+      cpu_exec(step);}
+      return 0;
 }
-static int cmd_info(char *args){
-    if(args == NULL)
+
+static int cmd_info(char *args) {
+    if (args == NULL) {
         printf("No args.\n");
     } else if (strcmp(args, "r") == 0) { // 使用 else if 代替 else
         isa_reg_display(); // 显示寄存器信息
@@ -87,23 +91,34 @@ static int cmd_w(char* args){
     create_watchpoint(args);
     return 0;
 }
-
-static int cmd_x(char *args){
-  char *n=strtok(args," ");
-  char *baseaddr=strtok(NULL," ");
-  int len=0;
-  paddr_t addr=0;
-  sscanf(n,"%d",&len);
-  sscanf(baseaddr,"%x",&addr);
-  for(int i=0;i<len;i++){
-    printf("0x%08x: 0x%08x\n", addr, paddr_read(addr, 4));
-    addr=addr+4;
+static int cmd_x(char *args)
+{
+  int len;
+  int addr;
+  sscanf(args,"%d %x",&len,&addr);
+  static int i;
+  for (i=0;i<len;i++)
+  {
+    printf("%x:0x%08x\n",addr,paddr_read(addr,4));
+    addr+=4;
   }
   return 0;
 }
 
-static int cmd_help(char *args);
 
+static int cmd_p(char *args)
+{
+  bool success;
+  word_t res =expr(args,&success);
+  if(!success)
+  {
+    puts("Invalid expression");
+  }else
+  {
+    printf("%u\n",res);
+  }
+  return 0;
+}
 static struct {
   const char *name;
   const char *description;
@@ -115,9 +130,7 @@ static struct {
   { "info","r for the register,w for the watchpoint",cmd_info},
   { "x","Ask for the memory",cmd_x},
   { "p", "Calculate the expression", cmd_p },
-  { "si","Execute by step",cmd_si},
-  { "d", "Delete the watchpoint", cmd_d },
-  { "w", "Create the watchpoint", cmd_w }
+  { "si","Execute by step",cmd_si}
   
   
 
