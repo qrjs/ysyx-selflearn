@@ -463,7 +463,7 @@ uint32_t eval(int p,int q)
         {op=op_md;}
         
         int op_type=tokens[op].type;
-        assert(p>=0&&q>=p);
+        assert(p>=0&&)
         uint32_t val1=eval(p,op-1);
         uint32_t val2=eval(op+1,q);
 
