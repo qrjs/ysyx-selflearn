@@ -17,8 +17,7 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
-#include </home/icse/Desktop/ysyx-workbench/nemu/src/monitor/sdb/watchpoint.h>
-#include </home/icse/Desktop/ysyx-workbench/nemu/src/monitor/sdb/sdb.h>
+
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -39,33 +38,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
-
-
-for (int i = 0; i < NR_WP; i++) {
-    if (wp_pool_flag(i)) {  // 检查第 i 个监视点是否有效
-        bool success = false;
-
-        char *expr1 = wp_pool_expr(i);  // 获取监视点 i 的表达式
-
-        int tmp = expr(expr1, &success);  // 计算表达式的值，成功与否由 success 标志表示
-
-        int old_value = wp_pool_old_value(i);  // 获取监视点 i 的旧值
-
-        if (success) {  // 如果表达式计算成功
-            if (tmp != old_value) {  // 检查新值与旧值是否不同
-                nemu_state.state = NEMU_STOP;  // 如果不同，停止 NEMU
-                wp_pool_write_new_value(i, tmp);  // 更新监视点 i 的新值
-                printf("NO.%d : expression:\"%s\",old:%d,new:%d\n",
-                       i, expr1, old_value, tmp);  // 输出监视点信息
-                return;  // 触发后返回
-            }
-        } else {
-            printf("expr error.\n");  // 如果表达式计算失败，打印错误信息
-            assert(0);  // 触发断言，终止程序
-        }
-    }
 }
-}
+
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
@@ -113,11 +87,7 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
-
 void assert_fail_msg() {
-  #ifdef CONFIG_MTRACE
-  display_memory();
-  #endif
   isa_reg_display();
   statistic();
 }

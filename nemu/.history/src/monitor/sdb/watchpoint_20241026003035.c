@@ -97,17 +97,19 @@ char *wp_pool_expr(int i){
 }
 
 void sdb_watchpoint_display(){
-    bool flag = true;
-    for(int i = 0 ; i < NR_WP ; i ++){
-        if(wp_pool[i].flag){
-            printf("Watchpoint.No: %d, expr = \"%s\", old_value = %d, new_value = %d\n",
-                    wp_pool[i].NO, wp_pool[i].expr,wp_pool[i].old_value, wp_pool[i].new_value);
-                flag = false;
-        }
+  bool flag=true;
+  for(int i=0;i<NR_WP;i++){
+    if (wp_pool[i].flag)
+    {
+     printf("Watchpoint.No: %d, expr = \"%s\", old_value = %d, new_value = %d\n"
+     wp_pool[i].NO, wp_pool[i].expr, wp_pool[i].old_value, wp_pool[i].new_value);
+     flag = false;
     }
-    if(flag) printf("No watchpoint now.\n");
+    
+  }
+  if(flag)
+  printf("No watchpoint now.\n")
 }
-
 
 void delete_watchpoint(int no){
   for(int i=0;i<NR_WP;i++)
