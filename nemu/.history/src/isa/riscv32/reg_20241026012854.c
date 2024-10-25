@@ -12,11 +12,10 @@
 *
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
+
 #include <isa.h>
-#include <assert.h>
-#include <string.h>
 #include "local-include/reg.h"
-#include <stdint.h>
+
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
@@ -25,9 +24,9 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-  int length =sizeof(regs)/sizeof(regs[0]);
+  int length=sizeof(regs)/sizeof(regs[0]);
   for(int i=0;i<length;i++)
-   printf("reg$%s---->%d\n",regs[i],cpu.gpr[i]);
+  printf("reg$%s--->%d\n",regs[i],cpu.gpr[i]);
 }
 
 
