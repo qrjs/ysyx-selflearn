@@ -111,8 +111,8 @@ bool check_parentheses(int p,int q)
 
     for(int i=p;i<=q;i++)
     {
-      if(tokens[i].type==10)par++;
-      else if(tokens[i].type==11)par--;
+      if(tokens[i].type==LPARE)par++;
+      else if(tokens[i].type==RPARE)par--;
 
 
 

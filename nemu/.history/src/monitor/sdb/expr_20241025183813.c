@@ -105,14 +105,14 @@ static int nr_token __attribute__((used))  = 0;
 
 bool check_parentheses(int p,int q)
 {
-  if (tokens[p].type==10 && tokens[q].type==11)
+  if (tokens[p].type== && tokens[q].type==RPARE)
   {
     int par=0;
 
     for(int i=p;i<=q;i++)
     {
-      if(tokens[i].type==10)par++;
-      else if(tokens[i].type==11)par--;
+      if(tokens[i].type==LPARE)par++;
+      else if(tokens[i].type==RPARE)par--;
 
 
 
