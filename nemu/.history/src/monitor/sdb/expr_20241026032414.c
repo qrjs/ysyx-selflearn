@@ -249,27 +249,22 @@ for(int i=0;i<65535;i++)
 
 
 //init the register
- for(int i = 0 ; i < tokens_len ; i ++)
-    {
-	    if(tokens[i].type == REGISTER )
-	    {   
-	        bool flag = true;
+for (int i=0;i<tokens_len;i++)
+{
+  if(tokens[i].type==9)
+  {
+    bool flag =true;
+    int tmp=isa_reg_str2val(tokens[i].str,&flag);
+    if(flag){
+      int2char(tmp, tokens[i].str); // transfrom the str --> $egx
+      }
+      else{
+    printf("Transform error. \n");
+		assert(0);
+	}
+  }
+}
 
-	        uint32_t tmp = isa_reg_str2val(tokens[i].str, &flag);
-            
-
-	        if(flag)
-            {   
-		        int2char(tmp, tokens[i].str);
-                
-	        }
-            else
-            {
-		        printf("Transfrom error. \n");
-		        assert(0);
-	        }
-	    }
-    }
 
 //init the hex
 for (int i=0;i<tokens_len;i++)
