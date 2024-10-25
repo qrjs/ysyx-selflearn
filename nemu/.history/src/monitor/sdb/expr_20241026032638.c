@@ -251,7 +251,7 @@ for(int i=0;i<65535;i++)
 //init the register
  for(int i = 0 ; i < tokens_len ; i ++)
     {
-	    if(tokens[i].type == 9 )
+	    if(tokens[i].type ==  )
 	    {   
 	        bool flag = true;
 
