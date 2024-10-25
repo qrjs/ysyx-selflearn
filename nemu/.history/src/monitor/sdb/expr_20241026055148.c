@@ -14,18 +14,32 @@
 ***************************************************************************************/
 
 #include <isa.h>
-#include <assert.h>
-#include <string.h>
-/* We use the POSIX regex functions to process regular expressions.
- * Type 'man regex' for more information about POSIX regex functions.
- */
+#include<assert.h>
 #include <regex.h>
+#include<string.h>
 
+
+int min (int a,int b)
+{
+  return a<b?a:b;
+}
 enum {
-  TK_NOTYPE = 256, TK_EQ,'+','-','*','/','(',')',LEQ,NEQ,OR,AND,'!',REG,HEX,NUM
-
-  /* TODO: Add more token types */
-
+  TK_NOTYPE = 256,
+  NUM=1,
+  HEX=2,
+  EQ=3,
+  NEQ=4,
+  OR=5,
+  AND=6,
+  LEQ=7,
+  GEQ=8,
+  REGISTER=9,
+  LPARE=10,
+  RPARE=11,
+  ADD=12,
+  SUB=13,
+  MUL=14,
+  DIV=15
 };
 
 static struct rule {
@@ -33,31 +47,29 @@ static struct rule {
   int token_type;
 } rules[] = {
 
-  /* TODO: Add more rules.
-   * Pay attention to the precedence level of different rules.
-   */
-
+  
   {" +", TK_NOTYPE},    // spaces
-  {"\\+", '+'},         // plus
-  {"\\=\\=", TK_EQ},        // equal
-  {"\\-",'-'},
-  {"\\*",'*'},
-  {"\\/",'/'},
+  {"\\+", ADD},         // plus
+  {"\\-",SUB},
+  {"\\*",MUL},
+  {"\\/",DIV},
 
-  {"\\(",L},
-  {"\\)",R},
+  {"\\(",LPARE},
+  {"\\)",RPARE},
 
-  {"\\<\\=",LEQ},
+  {"\\<\\=", LEQ},
+  {"\\>\\=",GEQ},
+  {"\\=\\=",EQ},        
   {"\\!\\=",NEQ},
 
-  {"\\|\\|",OR},
   {"\\&\\&",AND},
-  {"\\!",'!'},
+  {"\\|\\|",OR},
 
   {"\\$[a-zA-Z]*[0-9]*",REGISTER},
 
   {"0[xX][0-9a-fA-F]+",HEX},
-  {"[0-9]*", NUM},
+
+  {"[0-9]*",NUM}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -201,7 +213,7 @@ static bool make_token(char *e) {
          tokens[nr_token].type=9;
         strncpy(tokens[nr_token].str, substr_start, substr_len);
 				tokens[nr_token].str[substr_len] = '\0';
-        nr_token++;
+        nr_token
 				break;
          default:
             printf("i = %d and No rules is com.\n", i);
@@ -521,9 +533,9 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
-  /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+  int len;
+  *success=true;
+  len=pre_process();
+  
+  return eval(0,len-1);
 }
