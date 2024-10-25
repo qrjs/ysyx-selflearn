@@ -208,7 +208,7 @@ static bool make_token(char *e) {
             break;
          case 2://HEX
             tokens[nr_token].type = HEX;
-            strncpy(tokens[nr_token].str, substr_start, substr_len);
+            strncpy(tokens[nr_token].str, sub_str, substr_len);
             nr_token ++;
             break;
          case 9:
