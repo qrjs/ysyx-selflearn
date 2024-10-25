@@ -100,7 +100,7 @@ void sdb_watchpoint_display(){
     bool flag = true;
     for(int i = 0 ; i < NR_WP ; i ++){
         if(wp_pool[i].flag){
-            printf("Watchpoint.No: %d, expr = \"%s\", old_value = 0x%08x\n, new_value = 0x%08x\n",
+            printf("Watchpoint.No: %d, expr = \"%s\", old_value = 0x%08x\n, new_value = \n",
                     wp_pool[i].NO, wp_pool[i].expr,wp_pool[i].old_value, wp_pool[i].new_value);
                 flag = false;
         }
