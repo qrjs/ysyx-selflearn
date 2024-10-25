@@ -133,70 +133,105 @@ bool check_parentheses(int p,int q)
   return false;
 }
 
-static bool make_token(char *e) 
-{   for(int i=0;i<65535;i++)
+static bool make_token(char *e) {
+    for(int i=0;i<65535;i++)
     {tokens[i].type=0;
      strcpy(tokens[i].str,"0");}
-    int position = 0;
-    int i;
-    regmatch_t pmatch;
+  int position = 0;
+  int i;
+  regmatch_t pmatch;
 
-    nr_token = 0;
-    
-    while (e[position] != '\0') 
-    {
-    
-        for (i = 0; i < NR_REGEX; i ++) 
-        {
-            
-            int reg_res = regexec(&re[i], e + position, 1, &pmatch, 0);
-            
-            
-            if (reg_res == 0 && pmatch.rm_so == 0) 
-            {
-                char *substr_start = e + position;
-                char *substr_start_reg = e + position + 1;
-                int substr_len = pmatch.rm_eo;
+  nr_token = 0;
 
-        
-                position += substr_len;
+  while (e[position] != '\0') {
+    /* Try all rules one by one. */
+    for (i = 0; i < NR_REGEX; i ++) {
+      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
+        char *substr_start = e + position;
+        int substr_len = pmatch.rm_eo;
 
-            
-                if (rules[i].token_type == TK_NOTYPE) break;
+        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+            i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
-                tokens[nr_token].type = rules[i].token_type;
-        
-                switch (rules[i].token_type) 
-                {
-                    case NUM:
-                    case HEX:
-                        strncpy(tokens[nr_token].str, substr_start, substr_len);
-                        tokens[nr_token].str[substr_len]='\0';
-                        break;
-                    case REGISTER:{
+        position += substr_len;
+
+        /* TODO: Now a new token is recognized with rules[i]. Add codes
+         * to record the token in the array `tokens'. For certain types
+         * of tokens, some extra actions should be performed.
+         */
+
+        switch (rules[i].token_type) {
+         case 12:
+            tokens[nr_token++].type='+';
+            break;
+         case 13:
+            tokens[nr_token++].type='-';
+            break;
+         case 14:
+            tokens[nr_token++].type='*';
+            break;
+         case 15:
+            tokens[nr_token++].type='/';
+            break;
+         case 256:
+            break;
+         case 3:
+            tokens[nr_token++].type=3;
+            break;
+         case 4:
+            tokens[nr_token++].type=4;
+            break;
+         case 5:
+            tokens[nr_token++].type=5;
+            break;
+         case 6:
+            tokens[nr_token++].type=6;
+            break;
+         case 7:
+            tokens[nr_token++].type=7;
+            break;
+         case 8:
+            tokens[nr_token++].type=8;
+            break;
+         case 10:
+            tokens[nr_token++].type=10;
+            break;
+         case 11:
+            tokens[nr_token++].type=11;
+            break;
+
+//special
+         case 1://NUM
+            tokens[nr_token].type=NUM;
+            strncpy(tokens[nr_token].str,&e[position-substr_len],substr_len);
+            nr_token++;
+            break;
+         case 2://HEX
+            tokens[nr_token].type = HEX;
+            strncpy(tokens[nr_token].str, &e[position - substr_len], substr_len);
+            nr_token ++;
+            break;
+         case REGISTER:{
                         strncpy(tokens[nr_token].str, substr_start_reg, substr_len - 1);
                         tokens[nr_token].str[2]='\0';
+                        nr_token++
                         break; 
-                    }
-                    default:
-                        break;
-            
-                }
-
-                nr_token++;
-
-                break;
-            }
-        }
-
-        if (i == NR_REGEX) 
-        {
-            printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
-            return false;
-        }
+         default:
+            printf("i = %d and No rules is com.\n", i);
+            break;
+         }
+       break;
+       
+      }
     }
 
-    return true;
+    if (i == NR_REGEX) {
+      printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
+      return false;
+    }
+  }
+
+  return true;
 }
 
 uint32_t char2int(char s[]);
