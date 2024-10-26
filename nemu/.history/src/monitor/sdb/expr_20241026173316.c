@@ -169,11 +169,11 @@ static bool make_token(char *e)
                 switch (rules[i].token_type) 
                 {
                     case 1:
-                    case 2:
+                    case HEX:
                         strncpy(tokens[nr_token].str, substr_start, substr_len);
                         tokens[nr_token].str[substr_len]='\0';
                         break;
-                    case 9:{
+                    case REGISTER:{
                         strncpy(tokens[nr_token].str, substr_start_reg, substr_len - 1);
                         tokens[nr_token].str[2]='\0';
                         break; 
