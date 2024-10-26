@@ -306,7 +306,6 @@ for(int i=1;i<tokens_len;i++)
     }
     }
   }
-  if(i==tokens_len-1)
   return tokens_len;
 }
 

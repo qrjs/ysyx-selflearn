@@ -289,7 +289,7 @@ for(int i=1;i<tokens_len;i++)
   (tokens[i-1].type!=NUM && tokens[i-1].type!=HEX && tokens[i-1].type!=REGISTER && tokens[i-1].type!=11)&&
   (tokens[i+1].type==NUM || tokens[i+1].type==HEX || tokens[i+1].type==REGISTER))
   ||
-  (tokens[0].type=='-' && i==0))
+  (tokens[0].type=='-' && i==0)
   
   {
     tokens[i].type=TK_NOTYPE;
@@ -306,7 +306,6 @@ for(int i=1;i<tokens_len;i++)
     }
     }
   }
-  if(i==tokens_len-1)
   return tokens_len;
 }
 
