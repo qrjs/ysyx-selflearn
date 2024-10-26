@@ -247,21 +247,6 @@ for(int i=0;i<65535;i++)
           for(int j=0;j<65535;j++){
             tokens[i].str[j]=tokens[i].str[j+1];
           }
-          bool flag = true;
-
-	        uint32_t tmp = isa_reg_str2val(tokens[i].str, &flag);
-            
-
-	        if(flag)
-            {   
-		        int2char(tmp, tokens[i].str);
-                
-	        }
-            else
-            {
-		        printf("Transfrom error. \n");
-		        assert(0);
-	        }
         }
       
 	    else{   
