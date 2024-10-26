@@ -25,44 +25,6 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
-void test_expr();
-
-
-void test_expr() {
-  FILE *fp = fopen("/home/icse/Desktop/ysyx-workbench/nemu/tools/gen-expr/input", "r");
-  if (fp == NULL) perror("test_expr error");
-
-  char *e = NULL;
-  word_t correct_res;
-  size_t len = 0;
-  ssize_t read;
-  bool success = false;
-  int line_number = 0; // 增加一个计数器以跟踪行号
-
-  while (true) {
-    if(fscanf(fp, "%u ", &correct_res) == -1) break;
-    read = getline(&e, &len, fp);
-    e[read-1] = '\0';  // 去除结尾的换行符
-    line_number++;     // 增加行号
-
-    word_t res = expr(e, &success);
-    
-    // 输出当前表达式的调试信息
-    printf("Line %d: Expression = %s, Expected = %u, Got = %u, Success = %d\n", line_number, e, correct_res, res, success);
-
-    // 如果计算结果不匹配，则报告错误并输出详细信息
-    assert(success);
-    if (res != correct_res) {
-      printf("Error at line %d: Expression = %s, Expected = %u, Got = %u\n", line_number, e, correct_res, res);
-      assert(0); // 强制终止程序
-    }
-  }
-
-  fclose(fp);
-  if (e) free(e);
-
-  Log("expr test pass");
-}
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -122,7 +84,10 @@ static int cmd_d (char *args){
 }
 
 
-
+static int cmd_w(char* args){
+    create_watchpoint(args);
+    return 0;
+}
 
 static int cmd_x(char *args){
   char *n=strtok(args," ");
@@ -140,10 +105,34 @@ static int cmd_x(char *args){
 
 static int cmd_help(char *args);
 
+static int cmd_si(char *args){
+  int step=0;
+  if (args==NULL){
+      step=1;}
+  else
+      {sscanf(args,"%d",&step);
+      cpu_exec(step);}
+      return 0;
+}
 
+static int cmd_info(char *args) {
+    if (args == NULL) {
+        printf("No args.\n");
+    } else if (strcmp(args, "r") == 0) { // 使用 else if 代替 else
+        isa_reg_display(); // 显示寄存器信息
+    }else if(strcmp(args, "w") == 0)
+        sdb_watchpoint_display();
+    return 0; // 正常返回
+}
 
-
-
+static int cmd_d (char *args){
+    if(args == NULL)
+        printf("No args.\n");
+    else{
+        delete_watchpoint(atoi(args));
+    }
+    return 0;
+}
 
 
 static int cmd_w(char* args){
@@ -151,7 +140,19 @@ static int cmd_w(char* args){
     return 0;
 }
 
-
+static int cmd_x(char *args)
+{
+  int len;
+  int addr;
+  sscanf(args,"%d %x",&len,&addr);
+  static int i;
+  for (i=0;i<len;i++)
+  {
+    printf("%x:0x%08x\n",addr,paddr_read(addr,4));
+    addr+=4;
+  }
+  return 0;
+}
 
 
 static int cmd_p(char *args)
@@ -257,7 +258,7 @@ void sdb_mainloop() {
 void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
-  //test_expr();
+
   /* Initialize the watchpoint pool. */
   init_wp_pool();
 }

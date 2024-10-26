@@ -134,10 +134,8 @@ bool check_parentheses(int p,int q)
 }
 
 static bool make_token(char *e) {
-   for(int i=0;i<65535;i++)
-    {tokens[i].type=0;
-     strcpy(tokens[i].str,"0");}
-  int position=0;
+    
+  int position = 0;
   int i;
   regmatch_t pmatch;
 
@@ -154,6 +152,12 @@ static bool make_token(char *e) {
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
+
+        /* TODO: Now a new token is recognized with rules[i]. Add codes
+         * to record the token in the array `tokens'. For certain types
+         * of tokens, some extra actions should be performed.
+         */
+
         switch (rules[i].token_type) {
          case 12:
             tokens[nr_token++].type='+';
@@ -208,10 +212,6 @@ static bool make_token(char *e) {
          case 9:
          tokens[nr_token].type=9;
         strncpy(tokens[nr_token].str, substr_start, substr_len);
-        for(i=0;i<2;i++){
-        tokens[nr_token].str[i]=tokens[nr_token].str[i+1];
-        }
-        tokens[nr_token].str[2]='\0';
         nr_token++;
 				break;
          default:
@@ -240,8 +240,8 @@ int pre_process(){
 int tokens_len=0;
 for(int i=0;i<65535;i++)
 {
-  if(tokens[i].type==0){
-  break;}
+  if(tokens[i].type==0)
+  break;
   tokens_len++;
 }
 
@@ -250,7 +250,6 @@ for(int i=0;i<65535;i++)
  for(int i = 0 ; i < tokens_len ; i ++)
     {
 	    if(tokens[i].type == 9 )
-       
 	    {   
 	        bool flag = true;
 
@@ -268,8 +267,7 @@ for(int i=0;i<65535;i++)
 		        assert(0);
 	        }
 	    }
-      }
-    
+    }
 
 //init the hex
 for (int i=0;i<tokens_len;i++)

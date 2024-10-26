@@ -38,7 +38,7 @@ uint32_t isa_reg_str2val(const char *s, bool *success) {
     {   
         if(strcmp(regs[i],s)==0){
             
-            return gpr(i);
+            return gpr[i];
         }
         else if(strcmp("pc",s)==0){
             

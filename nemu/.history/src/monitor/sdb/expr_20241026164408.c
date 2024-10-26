@@ -134,10 +134,8 @@ bool check_parentheses(int p,int q)
 }
 
 static bool make_token(char *e) {
-   for(int i=0;i<65535;i++)
-    {tokens[i].type=0;
-     strcpy(tokens[i].str,"0");}
-  int position=0;
+    
+  int position = 0;
   int i;
   regmatch_t pmatch;
 
@@ -208,10 +206,6 @@ static bool make_token(char *e) {
          case 9:
          tokens[nr_token].type=9;
         strncpy(tokens[nr_token].str, substr_start, substr_len);
-        for(i=0;i<2;i++){
-        tokens[nr_token].str[i]=tokens[nr_token].str[i+1];
-        }
-        tokens[nr_token].str[2]='\0';
         nr_token++;
 				break;
          default:
@@ -240,8 +234,8 @@ int pre_process(){
 int tokens_len=0;
 for(int i=0;i<65535;i++)
 {
-  if(tokens[i].type==0){
-  break;}
+  if(tokens[i].type==0)
+  break;
   tokens_len++;
 }
 
@@ -249,8 +243,13 @@ for(int i=0;i<65535;i++)
 //init the register
  for(int i = 0 ; i < tokens_len ; i ++)
     {
-	    if(tokens[i].type == 9 )
-       
+	    if(tokens[i].type == 9 ){
+        if(tokens[i].str[0]=='$'){
+          for(int j=1;j<65535;j++){
+            tokens[i].str[j+1]=tokens[i].str[j];
+          }
+        }
+      }
 	    {   
 	        bool flag = true;
 
@@ -268,8 +267,7 @@ for(int i=0;i<65535;i++)
 		        assert(0);
 	        }
 	    }
-      }
-    
+    }
 
 //init the hex
 for (int i=0;i<tokens_len;i++)

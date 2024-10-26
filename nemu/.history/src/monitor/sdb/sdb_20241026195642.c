@@ -37,24 +37,19 @@ void test_expr() {
   size_t len = 0;
   ssize_t read;
   bool success = false;
-  int line_number = 0; // 增加一个计数器以跟踪行号
 
   while (true) {
     if(fscanf(fp, "%u ", &correct_res) == -1) break;
     read = getline(&e, &len, fp);
-    e[read-1] = '\0';  // 去除结尾的换行符
-    line_number++;     // 增加行号
+    e[read-1] = '\0';
 
     word_t res = expr(e, &success);
-    
-    // 输出当前表达式的调试信息
-    printf("Line %d: Expression = %s, Expected = %u, Got = %u, Success = %d\n", line_number, e, correct_res, res, success);
 
-    // 如果计算结果不匹配，则报告错误并输出详细信息
     assert(success);
     if (res != correct_res) {
-      printf("Error at line %d: Expression = %s, Expected = %u, Got = %u\n", line_number, e, correct_res, res);
-      assert(0); // 强制终止程序
+      puts(e);
+      printf("expected: %u, got: %u\n", correct_res, res);
+      assert(0);
     }
   }
 
@@ -63,7 +58,6 @@ void test_expr() {
 
   Log("expr test pass");
 }
-
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
