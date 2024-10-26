@@ -286,7 +286,7 @@ for (int i=0;i<tokens_len;i++)
 for(int i=0;i<tokens_len;i++)
 {
   if((tokens[i].type=='-' && i>0 &&
-  (tokens[i-1].type!=NUM && tokens[i-1].type!=HEX && tokens[i-1].type!=REGISTER && tokens[i-1].type!=11)&&
+  (tokens[i-1].type!=NUM && tokens[i-1].type!=HEX && tokens[i-1].type!=REGISTER && tokens[i-1].type!=11)&&\
   (tokens[i+1].type==NUM || tokens[i+1].type==HEX || tokens[i+1].type==REGISTER))
   ||
   (tokens[i].type=='-' && i==0)
