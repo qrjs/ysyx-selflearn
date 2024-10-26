@@ -237,7 +237,7 @@ int tokens_len=0;
 for(int i=0;i<65535;i++)
 {
   if(tokens[i].type==0){
-  break;}
+  break;
   tokens_len++;
 }
 

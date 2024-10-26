@@ -236,8 +236,8 @@ int pre_process(){
 int tokens_len=0;
 for(int i=0;i<65535;i++)
 {
-  if(tokens[i].type==0){
-  break;}
+  if(tokens[i].type==0){}
+  break;
   tokens_len++;
 }
 
