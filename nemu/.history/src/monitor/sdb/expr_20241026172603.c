@@ -245,7 +245,7 @@ for(int i=0;i<65535;i++)
 	    if(tokens[i].type == 9 ){
         if(tokens[i].str[0]=='$'){
           for(int j=0;j<65535;j++){
-            tokens[i].str[j]=tokens[i].str[j+1];
+            tokens[i].str[j]=tokens[i].str[j];
           }
         }
       
