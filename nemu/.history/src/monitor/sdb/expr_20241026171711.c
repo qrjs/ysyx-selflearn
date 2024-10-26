@@ -134,7 +134,7 @@ bool check_parentheses(int p,int q)
 }
 
 static bool make_token(char *e) {
-  int position=0;
+  int positon=0;
   int i;
   regmatch_t pmatch;
 
