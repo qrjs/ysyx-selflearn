@@ -211,7 +211,7 @@ static bool make_token(char *e) {
         for(i=0;i<2;i++){
         tokens[nr_token].str[i]=tokens[nr_token].str[i+1];
         }
-        tokens[nr_token].str[2]='0';
+        tokens[nr_token].str[2]
         nr_token++;
 				break;
          default:
