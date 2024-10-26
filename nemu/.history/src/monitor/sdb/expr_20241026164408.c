@@ -249,7 +249,7 @@ for(int i=0;i<65535;i++)
             tokens[i].str[j+1]=tokens[i].str[j];
           }
         }
-      
+      }
 	    {   
 	        bool flag = true;
 
@@ -267,7 +267,6 @@ for(int i=0;i<65535;i++)
 		        assert(0);
 	        }
 	    }
-      }
     }
 
 //init the hex

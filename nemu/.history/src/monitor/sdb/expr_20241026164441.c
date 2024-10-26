@@ -267,7 +267,6 @@ for(int i=0;i<65535;i++)
 		        assert(0);
 	        }
 	    }
-      }
     }
 
 //init the hex
