@@ -29,7 +29,7 @@ void test_expr();
 
 
 void test_expr() {
-  FILE *fp = fopen("/home/icse/Desktop/ysyx-workbench/nemu/tools/gen-expr/build/input", "r");
+  FILE *fp = fopen("/home/wangbaosen/ysyx/ysyx-workbench/nemu/tools/gen-expr/build/input", "r");
   if (fp == NULL) perror("test_expr error");
 
   char *e = NULL;
@@ -251,7 +251,7 @@ void sdb_mainloop() {
 void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
-  test_expr();
+  
   /* Initialize the watchpoint pool. */
   init_wp_pool();
 }
