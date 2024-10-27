@@ -283,14 +283,14 @@ for (int i=0;i<tokens_len;i++)
 
 
 //sub'-'-->negtive'-'
-for(int i=0;i<tokens_len;i++)
+for(int i=1;i<tokens_len;i++)
 {
-  if((tokens[i].type=='-' && i>0 &&\
-  (tokens[i-1].type!=NUM && tokens[i-1].type!=HEX && tokens[i-1].type!=REGISTER && tokens[i-1].type!=11)&&\
+  if((tokens[i].type=='-' && i>0 &&
+  (tokens[i-1].type!=NUM && tokens[i-1].type!=HEX && tokens[i-1].type!=REGISTER && tokens[i-1].type!=11)&&
   (tokens[i+1].type==NUM || tokens[i+1].type==HEX || tokens[i+1].type==REGISTER))
   ||
-  (tokens[i].type=='-' && i==0)
-  )
+  (tokens[0].type=='-' && i==0))
+  
   {
     tokens[i].type=TK_NOTYPE;
     for(int j=31;j>=0;j--){
@@ -306,6 +306,7 @@ for(int i=0;i<tokens_len;i++)
     }
     }
   }
+  if(i==tokens_len-1)
   return tokens_len;
 }
 
