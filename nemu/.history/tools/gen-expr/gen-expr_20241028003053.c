@@ -38,7 +38,9 @@ static char *buf_end = buf+(sizeof(buf)/sizeof(buf[0]));
 
 static int choose(int n) 
 {
+
   return rand() % n;
+
 }
 
 
