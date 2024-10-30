@@ -55,7 +55,7 @@ for (int i = 0; i < NR_WP; i++) {
             if (tmp != old_value) {  // 检查新值与旧值是否不同
                 nemu_state.state = NEMU_STOP;  // 如果不同，停止 NEMU
                 if(i==0){
-                wp_pool_write_old_value(i,tmp );}
+                wp_pool_write_old_value(i,new_value );}
                 else{
                   wp_pool_write_old_value(i,new_value );
                 }

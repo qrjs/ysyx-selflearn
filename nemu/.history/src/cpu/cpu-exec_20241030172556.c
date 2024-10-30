@@ -54,11 +54,8 @@ for (int i = 0; i < NR_WP; i++) {
         if (success) {  // 如果表达式计算成功
             if (tmp != old_value) {  // 检查新值与旧值是否不同
                 nemu_state.state = NEMU_STOP;  // 如果不同，停止 NEMU
-                if(i==0){
-                wp_pool_write_old_value(i,tmp );}
-                else{
-                  wp_pool_write_old_value(i,new_value );
-                }
+                if(i==0)
+                wp_pool_write_old_value(i,new_value );
                 wp_pool_write_new_value(i, tmp);  // 更新监视点 i 的新值
                 
                 printf("NO.%d : expression:\"%s\",old:0x%08x,new:0x%08x\n",
