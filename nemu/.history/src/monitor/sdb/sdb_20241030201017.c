@@ -29,7 +29,7 @@ void test_expr();
 
 
 void test_expr() {
-  FILE *fp = fopen("/home/icse/Desktop/ysyx-workbench/nemu/tools/gen-expr/build/input", "r");
+  FILE *fp = fopen("/home/icse/ysyx/ysyx-workbench/nemu/tools/gen-expr/build/input", "r");
   if (fp == NULL) perror("test_expr error");
 
   char *e = NULL;
