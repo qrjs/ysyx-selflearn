@@ -85,7 +85,7 @@ int wp_pool_old_value(int i){
   return wp_pool[i].old_value;
 }
 
-int wp_pool_new_value(int i){
+int wp_pool_old_value(int i){
   return wp_pool[i].new_value;
 }
 

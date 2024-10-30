@@ -17,7 +17,7 @@ int wp_pool_old_value(int i);
 int wp_pool_new_value(int i);
 char *wp_pool_expr(int i);
 void wp_pool_write_new_value(int i,int value);
-void wp_pool_write_old_value(int i,int value);
+void wp_pool_write_new_value(int i,int value);
 
 
 #endif

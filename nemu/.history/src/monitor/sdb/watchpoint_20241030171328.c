@@ -85,17 +85,13 @@ int wp_pool_old_value(int i){
   return wp_pool[i].old_value;
 }
 
-int wp_pool_new_value(int i){
-  return wp_pool[i].new_value;
-}
-
 void wp_pool_write_new_value(int i,int value){
     wp_pool[i].new_value=value;
     return;
 }
 
 void wp_pool_write_old_value(int i,int value){
-    wp_pool[i].old_value=value;
+    wp_pool[i].new_value=value;
     return;
 }
 char *wp_pool_expr(int i){

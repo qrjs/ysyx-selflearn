@@ -84,11 +84,9 @@ int wp_pool_flag(int i){
 int wp_pool_old_value(int i){
   return wp_pool[i].old_value;
 }
-
-int wp_pool_new_value(int i){
-  return wp_pool[i].new_value;
+int wp_pool_old_value(int i){
+  return wp_pool[i].old_value;
 }
-
 void wp_pool_write_new_value(int i,int value){
     wp_pool[i].new_value=value;
     return;
