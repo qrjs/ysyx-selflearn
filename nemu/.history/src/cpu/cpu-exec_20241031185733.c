@@ -57,7 +57,7 @@ for (int i = 0; i < NR_WP; i++) {
                 if(i==0){
                 wp_pool_write_old_value(i,tmp);}
                 else{
-                  wp_pool_write_old_value(i,new_value);
+                  wp_pool_write_old_value(i,new_value );
                 }
                 wp_pool_write_new_value(i, tmp);  // 更新监视点 i 的新值
                 
