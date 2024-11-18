@@ -12,7 +12,8 @@
 #
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
-NEMU_HOME := /home/icse/Desktop/ysyx-workbench/nemu
+NEMU_HOME := ~/ysyx-/nemu
+
 
 # Sanity check
 ifeq ($(wildcard $(NEMU_HOME)/src/nemu-main.c),)
