@@ -17,6 +17,8 @@
 .globl bin_start, bin_end
 bin_start:
 #ifdef BIN_PATH
-.incbin BIN_PATH
+    .incbin BIN_PATH
+#else
+    .error "BIN_PATH is not defined"
 #endif
 bin_end:
