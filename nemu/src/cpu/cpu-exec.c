@@ -17,8 +17,8 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
-#include </home/icse/Desktop/ysyx-workbench/nemu/src/monitor/sdb/watchpoint.h>
-#include </home/icse/Desktop/ysyx-workbench/nemu/src/monitor/sdb/sdb.h>
+#include </root/ysyx-/nemu/src/monitor/sdb/watchpoint.h>
+#include </root/ysyx-/nemu/src/monitor/sdb/sdb.h>
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -50,19 +50,14 @@ for (int i = 0; i < NR_WP; i++) {
         int tmp = expr(expr1, &success);  // 计算表达式的值，成功与否由 success 标志表示
 
         int old_value = wp_pool_old_value(i);  // 获取监视点 i 的旧值
-        int new_value = wp_pool_new_value(i);  // 获取监视点 i 的旧值
+
         if (success) {  // 如果表达式计算成功
             if (tmp != old_value) {  // 检查新值与旧值是否不同
                 nemu_state.state = NEMU_STOP;  // 如果不同，停止 NEMU
-                if(i==0){
-                wp_pool_write_old_value(i,tmp);}
-                else{
-                  wp_pool_write_old_value(i,new_value);
-                }
                 wp_pool_write_new_value(i, tmp);  // 更新监视点 i 的新值
-                
                 printf("NO.%d : expression:\"%s\",old:0x%08x,new:0x%08x\n",
                        i, expr1, old_value, tmp);  // 输出监视点信息
+                return;  // 触发后返回
             }
         } else {
             printf("expr error.\n");  // 如果表达式计算失败，打印错误信息
