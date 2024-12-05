@@ -11,8 +11,8 @@
 !.gitignore
 !init.sh
 /fceux-am
-/nvboard
 .history/
 nemu/.history/
 nemu/.history/
 /am-kernels
+/nvboard
