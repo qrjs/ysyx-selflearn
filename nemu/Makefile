@@ -12,7 +12,7 @@
 #
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
-NEMU_HOME := /root/ysyx-/nemu
+NEMU_HOME := /root/ysyx-workbench/nemu
 # Sanity check
 ifeq ($(wildcard $(NEMU_HOME)/src/nemu-main.c),)
 	$(error NEMU_HOME=$(NEMU_HOME) is not a NEMU repo)
@@ -55,7 +55,7 @@ CFLAGS_BUILD += -g -O0
 CFLAGS_TRACE += -DITRACE_COND=$(if $(CONFIG_ITRACE_COND),$(call remove_quote,$(CONFIG_ITRACE_COND)),true)
 
 # 组合所有标志
-CFLAGS  += $(CFLAGS_BUILD) $(CFLAGS_TRACE) -D__GUEST_ISA__=$(GUEST_ISA)
+CFLAGS  += $(CFLAGS_BUILD) $(CFLAGS_TRACE) -D__GUEST_ISA__=$(GUEST_ISA) 
 
 # 链接标志
 LDFLAGS += $(CFLAGS_BUILD)
