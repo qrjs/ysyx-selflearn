@@ -12,7 +12,8 @@ CFLAGS    += -I$(AM_HOME)/am/src/platform/nemu/include
 LDSCRIPTS += $(AM_HOME)/scripts/linker.ld
 LDFLAGS   += --defsym=_pmem_start=0x80000000 --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _start
-NEMUFLAGS += -b -l $(shell dirname $(IMAGE).elf)/nemu-log.txt
+NEMUFLAGS += -b -l $(shell dirname $(IMAGE).elf)/nemu-log.txt 
+NEMUFLAGS += -e $(IMAGE).elf
 
 MAINARGS_MAX_LEN = 64
 MAINARGS_PLACEHOLDER = The insert-arg rule in Makefile will insert mainargs here.

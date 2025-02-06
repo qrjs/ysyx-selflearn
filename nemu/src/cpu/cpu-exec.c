@@ -19,6 +19,7 @@
 #include <locale.h>
 #include </root/ysyx-workbench/nemu/src/monitor/sdb/watchpoint.h>
 #include </root/ysyx-workbench/nemu/src/monitor/sdb/sdb.h>
+#include </root/ysyx-workbench/nemu/src/utils/itrace.h>
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -113,11 +114,8 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
-
 void assert_fail_msg() {
-  #ifdef CONFIG_MTRACE
-  display_memory();
-  #endif
+  IFDEF(CONFIG_ITRACE, display_inst());
   isa_reg_display();
   statistic();
 }
@@ -148,6 +146,8 @@ void cpu_exec(uint64_t n) {
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
+          //if(nemu_state.state==NEMU_ABORT&&nemu_state.halt_ret != 0)
+          display_inst();
       // fall through
     case NEMU_QUIT: statistic();
   }
