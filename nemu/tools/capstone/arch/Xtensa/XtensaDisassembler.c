@@ -225,10 +225,10 @@ static DecodeStatus DecodeMR23RegisterClass(MCInst *Inst, uint64_t RegNo,
 					    uint64_t Address,
 					    const void *Decoder)
 {
-	if ((RegNo < 2) || (RegNo > 3))
+	if (RegNo >= ARR_SIZE(MR23DecoderTable))
 		return MCDisassembler_Fail;
 
-	unsigned Reg = MR23DecoderTable[RegNo - 2];
+	unsigned Reg = MR23DecoderTable[RegNo];
 	MCOperand_CreateReg0(Inst, (Reg));
 	return MCDisassembler_Success;
 }

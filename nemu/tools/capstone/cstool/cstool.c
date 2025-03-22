@@ -41,12 +41,32 @@ static struct {
 	{ "+percentage", "Adds % in front of the registers", {
 		CS_ARCH_PPC, CS_ARCH_MAX }, CS_OPT_SYNTAX_PERCENT, 0 },
 	{ "+nodollar", "Removes $ in front of the registers", {
-		CS_ARCH_MIPS, CS_ARCH_MAX }, CS_OPT_SYNTAX_NO_DOLLAR, 0 },
+		CS_ARCH_LOONGARCH, CS_ARCH_MIPS, CS_ARCH_MAX }, CS_OPT_SYNTAX_NO_DOLLAR, 0 },
 	// cs_mode only
 	{ "+nofloat", "Disables floating point support", {
 		CS_ARCH_MIPS, CS_ARCH_MAX }, 0, CS_MODE_MIPS_NOFLOAT },
 	{ "+ptr64", "Enables 64-bit pointers support", {
 		CS_ARCH_MIPS, CS_ARCH_MAX }, 0, CS_MODE_MIPS_PTR64 },
+	{ "+thumb", "Enables Thumb mode for ARM.", {
+		CS_ARCH_ARM, CS_ARCH_MAX }, 0, CS_MODE_THUMB },
+	{ "+m", "Enables the M extension for ARM.", {
+		CS_ARCH_ARM, CS_ARCH_MAX }, 0, CS_MODE_MCLASS },
+	{ "+v8", "Sets the ARM version to v8+", {
+		CS_ARCH_ARM, CS_ARCH_MAX }, 0, CS_MODE_V8 },
+	{ "+aix", "Enables AIX OS assembly", {
+		CS_ARCH_PPC, CS_ARCH_MAX }, 0, CS_MODE_AIX_OS },
+	{ "+booke", "Enables BOOKE extension", {
+		CS_ARCH_PPC, CS_ARCH_MAX }, 0, CS_MODE_BOOKE },
+	{ "+maix", "Enables Modern AIX assembly", {
+		CS_ARCH_PPC, CS_ARCH_MAX }, 0, CS_MODE_MODERN_AIX_AS },
+	{ "+msync", "Has only the msync instruction instead of sync. Implies BookE.", {
+		CS_ARCH_PPC, CS_ARCH_MAX }, 0, CS_MODE_MSYNC },
+	{ "+qpx", "Enables QPX extension", {
+		CS_ARCH_PPC, CS_ARCH_MAX }, 0, CS_MODE_QPX },
+	{ "+ps", "Enables PS extension", {
+		CS_ARCH_PPC, CS_ARCH_MAX }, 0, CS_MODE_PS },
+	{ "+spe", "Enables SPE extension", {
+		CS_ARCH_PPC, CS_ARCH_MAX }, 0, CS_MODE_SPE },
 	{ NULL }
 };
 
@@ -59,15 +79,6 @@ static struct {
 	{ "arm", "ARM, little endian", CS_ARCH_ARM, CS_MODE_ARM },
 	{ "armle", "ARM, little endian", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_LITTLE_ENDIAN },
 	{ "armbe", "ARM, big endian", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_BIG_ENDIAN },
-	{ "armv8", "ARM v8", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_V8 },
-	{ "armv8be", "ARM v8, big endian", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_V8 | CS_MODE_BIG_ENDIAN },
-	{ "cortexm", "ARM Cortex-M Thumb", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_MCLASS },
-	{ "cortexmv8", "ARM Cortex-M Thumb, v8", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_MCLASS | CS_MODE_V8 },
-	{ "thumb", "ARM Thumb mode, little endian", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_THUMB },
-	{ "thumble", "ARM Thumb mode, little endian", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_LITTLE_ENDIAN },
-	{ "thumbbe", "ARM Thumb mode, big endian", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_BIG_ENDIAN },
-	{ "thumbv8", "ARM Thumb v8", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_V8 },
-	{ "thumbv8be", "ARM Thumb v8, big endian", CS_ARCH_ARM, CS_MODE_ARM | CS_MODE_THUMB | CS_MODE_V8 | CS_MODE_BIG_ENDIAN },
 
 	{ "aarch64", "AArch64", CS_ARCH_AARCH64, CS_MODE_LITTLE_ENDIAN },
 	{ "aarch64be", "AArch64, big endian", CS_ARCH_AARCH64, CS_MODE_BIG_ENDIAN },
@@ -134,14 +145,18 @@ static struct {
 
 	{ "ppc32", "PowerPC 32-bit, little endian", CS_ARCH_PPC, CS_MODE_32 | CS_MODE_LITTLE_ENDIAN },
 	{ "ppc32be", "PowerPC 32-bit, big endian", CS_ARCH_PPC, CS_MODE_32 | CS_MODE_BIG_ENDIAN },
-	{ "ppc32qpx", "PowerPC 32-bit, qpx, little endian", CS_ARCH_PPC, CS_MODE_32 | CS_MODE_QPX | CS_MODE_LITTLE_ENDIAN },
-	{ "ppc32beqpx", "PowerPC 32-bit, qpx, big endian", CS_ARCH_PPC, CS_MODE_32 | CS_MODE_QPX | CS_MODE_BIG_ENDIAN },
-	{ "ppc32ps", "PowerPC 32-bit, ps, little endian", CS_ARCH_PPC, CS_MODE_32 | CS_MODE_PS | CS_MODE_LITTLE_ENDIAN },
-	{ "ppc32beps", "PowerPC 32-bit, ps, big endian", CS_ARCH_PPC, CS_MODE_32 | CS_MODE_PS | CS_MODE_BIG_ENDIAN },
 	{ "ppc64", "PowerPC 64-bit, little endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_LITTLE_ENDIAN },
 	{ "ppc64be", "PowerPC 64-bit, big endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_BIG_ENDIAN },
-	{ "ppc64qpx", "PowerPC 64-bit, qpx, little endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_QPX | CS_MODE_LITTLE_ENDIAN },
-	{ "ppc64beqpx", "PowerPC 64-bit, qpx, big endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_QPX | CS_MODE_BIG_ENDIAN },
+	{ "ppc64pwr7", "PowerPC 64-bit, Power7 (ISA v2.06), little endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PWR7 | CS_MODE_LITTLE_ENDIAN },
+	{ "ppc64bepwr7", "PowerPC 64-bit, Power7 (ISA v2.06), big endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PWR7 | CS_MODE_BIG_ENDIAN },
+	{ "ppc64pwr8", "PowerPC 64-bit, Power8 (ISA v2.07), little endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PWR8 | CS_MODE_LITTLE_ENDIAN },
+	{ "ppc64bepwr8", "PowerPC 64-bit, Power8 (ISA v2.07), big endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PWR8 | CS_MODE_BIG_ENDIAN },
+	{ "ppc64pwr9", "PowerPC 64-bit, Power9 (ISA v3.0), little endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PWR9 | CS_MODE_LITTLE_ENDIAN },
+	{ "ppc64bepwr9", "PowerPC 64-bit, Power9 (ISA v3.0), big endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PWR9 | CS_MODE_BIG_ENDIAN },
+	{ "ppc64pwr10", "PowerPC 64-bit, Power10 (ISA v3.1), little endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PWR10 | CS_MODE_LITTLE_ENDIAN },
+	{ "ppc64bepwr10", "PowerPC 64-bit, Power10 (ISA v3.1), big endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PWR10 | CS_MODE_BIG_ENDIAN },
+	{ "ppc64FutureISA", "PowerPC 64-bit, Future ISA, little endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PPC_ISA_FUTURE | CS_MODE_LITTLE_ENDIAN },
+	{ "ppc64beFutureISA", "PowerPC 64-bit, Future ISA, big endian", CS_ARCH_PPC, CS_MODE_64 | CS_MODE_PPC_ISA_FUTURE | CS_MODE_BIG_ENDIAN },
 
 	{ "sparc", "Sparc, big endian", CS_ARCH_SPARC, CS_MODE_BIG_ENDIAN },
 	{ "sparcv9", "Sparc v9, big endian", CS_ARCH_SPARC, CS_MODE_BIG_ENDIAN | CS_MODE_V9 },
@@ -218,12 +233,16 @@ static struct {
 	{ "tc160", "Tricore V1.6", CS_ARCH_TRICORE, CS_MODE_TRICORE_160 },
 	{ "tc161", "Tricore V1.6.1", CS_ARCH_TRICORE, CS_MODE_TRICORE_161 },
 	{ "tc162", "Tricore V1.6.2", CS_ARCH_TRICORE, CS_MODE_TRICORE_162 },
+	{ "tc180", "Tricore V1.8.0", CS_ARCH_TRICORE, CS_MODE_TRICORE_180 },
 
 	{ "loongarch32", "LoongArch 32-bit", CS_ARCH_LOONGARCH, CS_MODE_LOONGARCH32 },
 	{ "loongarch64", "LoongArch 64-bit", CS_ARCH_LOONGARCH, CS_MODE_LOONGARCH64 },
 	{ "esp32", "Xtensa ESP32", CS_ARCH_XTENSA, CS_MODE_XTENSA_ESP32 },
 	{ "esp32s2", "Xtensa ESP32S2", CS_ARCH_XTENSA, CS_MODE_XTENSA_ESP32S2 },
 	{ "esp8266", "Xtensa ESP8266", CS_ARCH_XTENSA, CS_MODE_XTENSA_ESP8266 },
+
+	{ "arc", "ARC Little-Endian", CS_ARCH_ARC, CS_MODE_LITTLE_ENDIAN },
+
 	{ NULL }
 };
 
@@ -309,6 +328,7 @@ static const char *get_arch_name(cs_arch arch)
 	case CS_ARCH_ALPHA: return "Alpha";
 	case CS_ARCH_HPPA: return "HPPA";
 	case CS_ARCH_LOONGARCH: return "LoongArch";
+	case CS_ARCH_ARC: return "ARC";
 	default: return NULL;
 	}
 }
@@ -427,6 +447,9 @@ static void print_details(csh handle, cs_arch arch, cs_mode md, cs_insn *ins)
 			break;
 		case CS_ARCH_XTENSA:
 			print_insn_detail_xtensa(handle, ins);
+			break;
+		case CS_ARCH_ARC:
+			print_insn_detail_arc(handle, ins);
 			break;
 		default: break;
 	}
@@ -616,6 +639,10 @@ int main(int argc, char **argv)
 
 				if (cs_support(CS_ARCH_XTENSA)) {
 					printf("xtensa=1 ");
+				}
+
+				if (cs_support(CS_ARCH_ARC)) {
+					printf("arc=1 ");
 				}
 
 				printf("\n");

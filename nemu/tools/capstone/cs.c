@@ -72,6 +72,7 @@
 #include "arch/HPPA/HPPAModule.h"
 #include "arch/LoongArch/LoongArchModule.h"
 #include "arch/Xtensa/XtensaModule.h"
+#include "arch/ARC/ARCModule.h"
 
 typedef struct cs_arch_config {
 	// constructor initialization
@@ -138,7 +139,9 @@ typedef struct cs_arch_config {
 		PPC_global_init, \
 		PPC_option, \
 		~(CS_MODE_LITTLE_ENDIAN | CS_MODE_32 | CS_MODE_64 | CS_MODE_BIG_ENDIAN \
-				| CS_MODE_QPX | CS_MODE_PS | CS_MODE_BOOKE), \
+				| CS_MODE_QPX | CS_MODE_PS | CS_MODE_BOOKE | CS_MODE_SPE \
+				| CS_MODE_AIX_OS | CS_MODE_PWR7 | CS_MODE_PWR8 | CS_MODE_PWR9 \
+				| CS_MODE_PWR10 | CS_MODE_PPC_ISA_FUTURE | CS_MODE_MSYNC | CS_MODE_MODERN_AIX_AS), \
 	}
 #define CS_ARCH_CONFIG_SPARC \
 	{ \
@@ -242,7 +245,7 @@ typedef struct cs_arch_config {
 		TRICORE_option, \
 		~(CS_MODE_TRICORE_110 | CS_MODE_TRICORE_120 | CS_MODE_TRICORE_130 \
 		| CS_MODE_TRICORE_131 | CS_MODE_TRICORE_160 | CS_MODE_TRICORE_161 \
-		| CS_MODE_TRICORE_162 | CS_MODE_LITTLE_ENDIAN), \
+		| CS_MODE_TRICORE_162 | CS_MODE_TRICORE_180 | CS_MODE_LITTLE_ENDIAN), \
 	}
 #define CS_ARCH_CONFIG_ALPHA \
 	{ \
@@ -262,6 +265,13 @@ typedef struct cs_arch_config {
 		Xtensa_option, \
 		~(CS_MODE_XTENSA_ESP32 | CS_MODE_XTENSA_ESP32S2 | \
 		  CS_MODE_XTENSA_ESP8266), \
+	}
+
+#define CS_ARCH_CONFIG_ARC \
+	{ \
+		ARC_global_init, \
+		ARC_option, \
+		~(CS_MODE_LITTLE_ENDIAN), \
 	}
 
 #ifdef CAPSTONE_USE_ARCH_REGISTRATION
@@ -380,7 +390,12 @@ static const cs_arch_config arch_configs[MAX_ARCH] = {
 	{ NULL, NULL, 0 },
 #endif
 #ifdef CAPSTONE_HAS_XTENSA
-	CS_ARCH_CONFIG_XTENSA
+	CS_ARCH_CONFIG_XTENSA,
+#else
+	{ NULL, NULL, 0 },
+#endif
+#ifdef CAPSTONE_HAS_ARC
+	CS_ARCH_CONFIG_ARC,
 #else
 	{ NULL, NULL, 0 },
 #endif
@@ -454,7 +469,10 @@ static const uint32_t all_arch = 0
 #ifdef CAPSTONE_HAS_XTENSA
 				 | (1 << CS_ARCH_XTENSA)
 #endif
-	;
+#ifdef CAPSTONE_HAS_ARC
+				 | (1 << CS_ARCH_ARC)
+#endif
+;
 #endif
 
 
@@ -682,11 +700,20 @@ void CAPSTONE_API cs_arch_register_loongarch(void)
 }
 
 CAPSTONE_EXPORT
+void CAPSTONE_API cs_arch_register_arc(void)
+{
+#if defined(CAPSTONE_USE_ARCH_REGISTRATION) && defined(CAPSTONE_HAS_ARC)
+	CS_ARCH_REGISTER(ARC);
+#endif
+}
+
+
+CAPSTONE_EXPORT
 bool CAPSTONE_API cs_support(int query)
 {
 	if (query == CS_ARCH_ALL)
 		return all_arch ==
-		       ((1 << CS_ARCH_ARM) | (1 << CS_ARCH_AARCH64) |
+		    ((1 << CS_ARCH_ARM) | (1 << CS_ARCH_AARCH64) |
 			(1 << CS_ARCH_MIPS) | (1 << CS_ARCH_X86) |
 			(1 << CS_ARCH_PPC) | (1 << CS_ARCH_SPARC) |
 			(1 << CS_ARCH_SYSTEMZ) | (1 << CS_ARCH_XCORE) |
@@ -696,7 +723,8 @@ bool CAPSTONE_API cs_support(int query)
 			(1 << CS_ARCH_WASM) | (1 << CS_ARCH_BPF) |
 			(1 << CS_ARCH_SH) | (1 << CS_ARCH_TRICORE) |
 			(1 << CS_ARCH_ALPHA) | (1 << CS_ARCH_HPPA) |
-			(1 << CS_ARCH_LOONGARCH) | (1 << CS_ARCH_XTENSA));
+			(1 << CS_ARCH_LOONGARCH) | (1 << CS_ARCH_XTENSA) | 
+			(1 << CS_ARCH_ARC));
 
 	if ((unsigned int)query < CS_ARCH_MAX)
 		return all_arch & (1 << query);
@@ -1008,6 +1036,10 @@ static uint8_t skipdata_size(cs_struct *handle)
 		case CS_ARCH_LOONGARCH:
 			// LoongArch alignment is 4.
 			return 4;
+		case CS_ARCH_ARC:
+			// ARC instruction's length can be 2, 4, 6 or 8 bytes,
+			// therefore, skip 2 bytes
+			return 2;
 	}
 }
 
@@ -1762,6 +1794,11 @@ int CAPSTONE_API cs_op_count(csh ud, const cs_insn *insn, unsigned int op_type)
 				if (insn->detail->loongarch.operands[i].type == (loongarch_op_type)op_type)
 					count++;
 			break;
+		case CS_ARCH_ARC:
+			for (i = 0; i < insn->detail->arc.op_count; i++)
+				if (insn->detail->arc.operands[i].type == (arc_op_type)op_type)
+					count++;
+			break;
 	}
 
 	return count;
@@ -1964,6 +2001,14 @@ int CAPSTONE_API cs_op_index(csh ud, const cs_insn *insn, unsigned int op_type,
 		case CS_ARCH_LOONGARCH:
 			for (i = 0; i < insn->detail->loongarch.op_count; i++) {
 				if (insn->detail->loongarch.operands[i].type == (loongarch_op_type)op_type)
+					count++;
+				if (count == post)
+					return i;
+			}
+			break;
+		case CS_ARCH_ARC:
+			for (i = 0; i < insn->detail->arc.op_count; i++) {
+				if (insn->detail->arc.operands[i].type == (arc_op_type)op_type)
 					count++;
 				if (count == post)
 					return i;

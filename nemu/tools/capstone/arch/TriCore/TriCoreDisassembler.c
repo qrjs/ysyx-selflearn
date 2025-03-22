@@ -201,6 +201,9 @@ bool TriCore_getFeatureBits(unsigned int mode, unsigned int feature)
 	case CS_MODE_TRICORE_162: {
 		return feature == TriCore_HasV162Ops;
 	}
+	case CS_MODE_TRICORE_180: {
+		return feature == TriCore_HasV180Ops;
+	}
 	default:
 		return false;
 	}
@@ -1704,21 +1707,6 @@ static bool getInstruction(csh ud, const uint8_t *code, size_t code_len,
 		if (decodeInstruction2_or_4(code, code_len, MI, size, address,
 					    DecoderTablev11016,
 					    DecoderTablev11032)) {
-			return true;
-		}
-		break;
-	}
-	case CS_MODE_TRICORE_161: {
-		if (decodeInstruction2_or_4(code, code_len, MI, size, address,
-					    NULL, DecoderTablev16132)) {
-			return true;
-		}
-		break;
-	}
-	case CS_MODE_TRICORE_162: {
-		if (decodeInstruction2_or_4(code, code_len, MI, size, address,
-					    DecoderTablev16216,
-					    DecoderTablev16232)) {
 			return true;
 		}
 		break;

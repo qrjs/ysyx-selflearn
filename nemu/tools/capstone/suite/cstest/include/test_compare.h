@@ -18,6 +18,9 @@
 /// > 0 => true
 typedef int32_t tbool;
 
+#define CYAML_FIELD_TBOOL(name, flags, type, member) \
+	CYAML_FIELD_INT(name, flags, type, member)
+
 /// Compares the @actual bool against the @expected tbool:
 /// It returns with @ret_val, if expected is set but the values mismatch.
 #define compare_tbool_ret(actual, expected, ret_val) \
@@ -162,7 +165,7 @@ typedef int32_t tbool;
 				#actual " != " #expected ": %" PRId32 \
 					" != %s%s\n", \
 				actual, expected, \
-				found ? "" : " <== id not found"); \
+				found ? "" : " <== id not found. Consider adding it in test_mapping.h::cs_enum_map."); \
 			return ret_val; \
 		} \
 	}
