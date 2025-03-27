@@ -4,25 +4,37 @@
 module clk_count(
   input  wire clk,
   input  wire rst,
-  output wire clk1_flag,
-  output wire clk2_flag
+  output wire clk1_flag,  // 分频时钟1（50%占空比）
+  output wire clk2_flag   // 分频时钟2（50%占空比）
 );
 
-  reg [1:0] clk_cnt;
+  // 二分频逻辑（周期=2T，占空比50%）
+  reg clk_div1;
   always @(posedge clk) begin
-    if(rst == `RST_VAL)
-      clk_cnt <= 2'd0;
-    else if(clk_cnt == 2'd2)
-      clk_cnt <= 2'd0;
+    if (rst == `RST_VAL)
+      clk_div1 <= 1'b0;
     else
-      clk_cnt <= clk_cnt + 2'd1;
+      clk_div1 <= ~clk_div1;  // 每个时钟周期翻转一次
   end
 
-  assign clk1_flag = (clk_cnt == 2'd1);
-  assign clk2_flag = (clk_cnt == 2'd2);
+  // 四分频逻辑（周期=4T，占空比50%）
+  reg [1:0] clk_div2_cnt;
+  reg clk_div2;
+  always @(posedge clk) begin
+    if (rst == `RST_VAL) begin
+      clk_div2_cnt <= 2'd0;
+      clk_div2     <= 1'b0;
+    end else begin
+      clk_div2_cnt <= clk_div2_cnt + 1;
+      if (clk_div2_cnt == 2'd1)  // 每2个周期翻转一次
+        clk_div2 <= ~clk_div2;
+    end
+  end
+
+  assign clk1_flag = clk_div1;  // 二分频时钟（50%占空比）
+  assign clk2_flag = clk_div2;  // 四分频时钟（50%占空比）
 
 endmodule
-
 
 
 module PC(
@@ -35,7 +47,7 @@ module PC(
   always @(posedge clk) begin
     if(rst == `RST_VAL)
       pc <= `RESET_VECTOR;
-    else if(clk2_flag == 1'b1)
+    else 
       pc <= pc + `PC_INCREMENT;
   end
 
@@ -98,7 +110,6 @@ module top(
 
   // Register File module
   register register_file_inst(
-    .clk      (clk),
     .rst      (rst),
     .clk1_flag(clk1_flag),
     .rs1      (rs1),
