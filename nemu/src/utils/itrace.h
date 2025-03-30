@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <elf.h>
-#include </root/ysyx-workbench/nemu/include/device/map.h>
+#include </home/jrq/ysyx-workbench/nemu/include/device/map.h>
 
 
 

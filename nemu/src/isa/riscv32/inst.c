@@ -17,7 +17,7 @@
 #include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
-#include </root/ysyx-workbench/nemu/src/utils/itrace.h>
+#include </home/jrq/ysyx-workbench/nemu/src/utils/itrace.h>
 
 #define R(i) gpr(i)
 #define Mr vaddr_read

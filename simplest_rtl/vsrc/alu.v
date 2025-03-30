@@ -1,4 +1,4 @@
-`include "/root/ysyx-workbench/simplest_rtl/vsrc/define.v"
+`include "/home/jrq/ysyx-workbench/simplest_rtl/vsrc/define.v"
 
 
 module alu(

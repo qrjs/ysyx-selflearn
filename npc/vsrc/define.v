@@ -1,0 +1,156 @@
+//reset
+`define RST_VAL 1'b1
+
+//I type
+`define INST_TYPE_I 7'b001_0011
+`define ADDI        3'b000
+`define SLLI        3'b001
+`define SLTIU       3'b001
+`define XORI        3'b100
+`define SRLAI       3'b001
+`define ANDI        3'b111
+
+//R type 
+`define INST_TYPE_R 7'b011_0011
+`define ADD         3'b000
+`define SUB         3'b000
+`define SLL         3'b001
+`define SLTU        3'b011
+`define XOR         3'b100
+`define SRL         3'b101
+`define OR          3'b110
+`define AND         3'b111
+
+//L type
+`define INST_TYPE_L 7'b000_0011
+`define LH   3'b001
+`define LW   3'b010
+`define LBU  3'b100
+`define LHU  3'b101
+
+
+//B type
+`define INST_TYPE_B 7'b110_0011
+`define BEQ  3'b000
+`define BNE  3'b001
+`define BLT  3'b100
+`define BGE  3'b101
+`define BLTU 3'b110
+`define BGEU 3'b111
+
+//S type
+`define INST_TYPE_S 7'b010_0011
+`define SB   3'b000
+`define SH   3'b001
+`define SW   3'b010
+
+//U type
+`define INST_TYPE_LUI   7'b011_0111
+`define INST_TYPE_AUIPC 7'b001_0111
+
+//JALR type
+`define INST_TYPE_JALR 7'b110_0111
+//JAL type
+`define INST_TYPE_JAL  7'b110_1111
+
+// E type instruction
+`define INST_TYPE_E   7'b111_0011
+`define INST_EBREAK   12'b0000_0000_0001
+`define HIT_TRAP      1
+`define ABORT         2
+`define Unit_ALU      0   //alu
+`define Unit_MEM      1   //memory
+`define Unit_CU1      2   //contril unit
+`define Unit_CU2      3   
+`define Unit_CU3      4   
+`define Unit_CU4      5   
+`define Unit_CU5      6   
+`define Unit_CU6      7   
+`define Unit_CU7      8   
+`define Unit_CU8      9   
+`define Unit_CU9      10   
+`define Unit_CU10     11   
+`define Unit_CU11     12   
+`define Unit_IE1      13   //imm extended unit
+`define Unit_IE2      14  
+`define Unit_IE3      15 
+
+// type
+`define TYPE_BUS 2:0
+`define INST_R   3'd1
+`define INST_I   3'd2
+`define INST_S   3'd3
+`define INST_U   3'd4
+`define INST_B   3'd5
+`define INST_J   3'd6
+`define INST_E   3'd7
+
+//MUX1
+`define MUX1_NB 1'b0
+`define MUX1_B  1'b1
+
+// MUX2
+`define MUX2_PCadd4  1'b0
+`define MUX2_result  1'b1
+
+// MUX3
+`define MUX3_src2  1'b0
+`define MUX3_imm32 1'b1
+
+// MUX4
+`define MUX4_pc    1'b0
+`define MUX4_src1  1'b1
+
+// MUX5
+`define MUX5_PCadd4 2'd0
+`define MUX5_memdat 2'd1
+`define MUX5_result 2'd2
+`define MUX5_IDLE   2'd3
+
+
+
+// ALU
+`define ADD       5'b00000
+`define SUB       5'b00001
+`define SLL       5'b00010
+`define XOR       5'b00011
+`define SRL       5'b00100
+`define SRA       5'b00101
+`define OR        5'b00110
+`define AND       5'b00111
+`define EQ        5'b01000
+`define NE        5'b01001
+`define LT        5'b01010
+`define GE        5'b01011
+`define LTU       5'b01100
+`define GEU       5'b01101
+`define ADD_LUI   5'b01110
+`define ADD_JALR  5'b01111
+`define Alu_S     4:0
+
+
+// PC
+`define RESET_VECTOR 32'h8000_0000
+`define PC_INCREMENT 32'd4
+
+
+// RegisterFile
+`define Reg0      5'd0
+`define Reg0_VAL  32'd0
+
+// mem
+`define WByte     8'b0000_0001
+`define WHalf     8'b0000_0011
+`define WWord     8'b0000_1111
+`define LoadW     3'd0
+`define LoadBU    3'd1
+`define LoadHU    3'd2
+`define LoadB     3'd3
+`define LoadH     3'd4
+
+
+// ARCH
+`define Bit_Width  32
+`define Reg_Num    32
+`define Reg_Bus    31:0
+`define RegRstVal 32'd0
