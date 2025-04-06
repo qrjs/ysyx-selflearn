@@ -26,7 +26,7 @@ remove_quote = $(patsubst "%",%,$(1))
 # Extract variabls from menuconfig
 GUEST_ISA ?= $(call remove_quote,$(CONFIG_ISA))
 ENGINE ?= $(call remove_quote,$(CONFIG_ENGINE))
-NAME    = $(GUEST_ISA)-nemu-$(ENGINE)
+NAME    = $(GUEST_ISA)-nemu-$(ENGINE).so
 
 # Include all filelist.mk to merge file lists
 FILELIST_MK = $(shell find -L ./src -name "filelist.mk")
@@ -50,7 +50,7 @@ CFLAGS_BUILD += $(if $(CONFIG_CC_DEBUG),-Og -ggdb3,)
 CFLAGS_BUILD += $(if $(CONFIG_CC_ASAN),-fsanitize=address,)
 
 # 添加调试信息和优化级别
-CFLAGS_BUILD += -g -O0  
+CFLAGS_BUILD += -g -O0 -fPIC -no-pie
 
 CFLAGS_TRACE += -DITRACE_COND=$(if $(CONFIG_ITRACE_COND),$(call remove_quote,$(CONFIG_ITRACE_COND)),true)
 
@@ -58,7 +58,7 @@ CFLAGS_TRACE += -DITRACE_COND=$(if $(CONFIG_ITRACE_COND),$(call remove_quote,$(C
 CFLAGS  += $(CFLAGS_BUILD) $(CFLAGS_TRACE) -D__GUEST_ISA__=$(GUEST_ISA) 
 
 # 链接标志
-LDFLAGS += $(CFLAGS_BUILD)
+LDFLAGS += $(CFLAGS_BUILD) -shared
 
 print-cflags: 
 	@echo $(CFLAGS)
@@ -76,3 +76,6 @@ else
 include $(NEMU_HOME)/scripts/native.mk
 endif
 V=1
+# 覆盖默认的链接规则，强制生成共享库
+$(BINARY):: $(OBJS)
+	$(CXX) -shared -o $@ $^ $(LDFLAGS) -Wl,-undefined,dynamic_lookup

@@ -2,60 +2,62 @@
 `define RST_VAL 1'b1
 
 //I type
-`define INST_TYPE_I 7'b001_0011
-`define ADDI        3'b000
-`define SLLI        3'b001
-`define SLTIU       3'b001
-`define XORI        3'b100
-`define SRLAI       3'b001
-`define ANDI        3'b111
+`define INST_TYPE_I 7'b0010011
+`define INST_ADDI        3'b000
+`define INST_SLLI        3'b001
+`define INST_SLTIU       3'b011
+`define INST_XORI        3'b100
+`define INST_SRLAI       3'b101
+`define INST_ANDI        3'b111
 
 //R type 
-`define INST_TYPE_R 7'b011_0011
-`define ADD         3'b000
-`define SUB         3'b000
-`define SLL         3'b001
-`define SLTU        3'b011
-`define XOR         3'b100
-`define SRL         3'b101
-`define OR          3'b110
-`define AND         3'b111
+`define INST_TYPE_R 7'b0110011
+`define INST_ADD    3'b000
+`define INST_SUB    3'b000
+`define INST_SLL    3'b001
+`define INST_SLTU   3'b011
+`define INST_XOR    3'b100
+`define INST_SRL    3'b101
+`define INST_SRA    3'b101
+`define INST_OR     3'b110
+`define INST_AND    3'b111
 
 //L type
-`define INST_TYPE_L 7'b000_0011
-`define LH   3'b001
-`define LW   3'b010
-`define LBU  3'b100
-`define LHU  3'b101
+`define INST_TYPE_L 7'b0000011
+`define INST_LB     3'b000
+`define INST_LH     3'b001
+`define INST_LW     3'b010
+`define INST_LBU    3'b100
+`define INST_LHU    3'b101
 
 
 //B type
-`define INST_TYPE_B 7'b110_0011
-`define BEQ  3'b000
-`define BNE  3'b001
-`define BLT  3'b100
-`define BGE  3'b101
-`define BLTU 3'b110
-`define BGEU 3'b111
+`define INST_TYPE_B 7'b1100011
+`define INST_BEQ  3'b000
+`define INST_BNE  3'b001
+`define INST_BLT  3'b100
+`define INST_BGE  3'b101
+`define INST_BLTU 3'b110
+`define INST_BGEU 3'b111
 
 //S type
-`define INST_TYPE_S 7'b010_0011
-`define SB   3'b000
-`define SH   3'b001
-`define SW   3'b010
+`define INST_TYPE_S 7'b0100011
+`define INST_SB   3'b000
+`define INST_SH   3'b001
+`define INST_SW   3'b010
 
 //U type
-`define INST_TYPE_LUI   7'b011_0111
-`define INST_TYPE_AUIPC 7'b001_0111
+`define INST_TYPE_LUI   7'b0110111
+`define INST_TYPE_AUIPC 7'b0010111
 
 //JALR type
-`define INST_TYPE_JALR 7'b110_0111
+`define INST_TYPE_JALR 7'b1100111
 //JAL type
-`define INST_TYPE_JAL  7'b110_1111
+`define INST_TYPE_JAL  7'b1101111
 
 // E type instruction
-`define INST_TYPE_E   7'b111_0011
-`define INST_EBREAK   12'b0000_0000_0001
+`define INST_TYPE_E   7'b1110011
+`define INST_EBREAK   12'b000000000001
 `define HIT_TRAP      1
 `define ABORT         2
 `define Unit_ALU      0   //alu

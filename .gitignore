@@ -16,3 +16,5 @@ nemu/.history/
 nemu/.history/
 /am-kernels
 /nvboard
+/npc/obj_dir
+/npc/log

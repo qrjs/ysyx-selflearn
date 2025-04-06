@@ -1,55 +1,47 @@
-MODULE=top
-CSRCS = $(shell find $(abspath ./csrc) -name "*.cpp")
-VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
-VSRCS += $(shell find $(abspath ./vsrc/*) -name "*.v")
-
-# 包含通用Makefile规则
 include ../Makefile
+MODULE=rv32
+CSRCS = $(shell find $(abspath ./csrc) -name "*.cpp")
+#VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
+VSRCS += $(shell find $(abspath ./vsrc/*) -name "*.v")
+INC_PATH = $(NPC_HOME)/include/
+LIBS = -lreadline   # link the <readline> lib
+LIBS += -ldl        # link the <dlfcn> lib
+#LIBS += $(shell llvm-config-11 --libs)
+#CXXFLAGS += $(shell llvm-config-11 --cxxflags) -fPIE
 
 
-.PHONY: sim
-sim: waveform.fst
+# ifdef CONFIG_DIFFTEST
+DIFF_REF_PATH = $(NEMU_HOME)
+DIFF_REF_SO = $(DIFF_REF_PATH)/build/riscv32-nemu-interpreter.so
+ARGS_DIFF = --diff=$(DIFF_REF_SO)
+
+IMG ?=      #loaded by AM Makefile (npc.mk)
+
+override ARGS ?= --log=./log/npc-log.txt
+override ARGS += $(ARGS_DIFF)
+BINARY := ./obj_dir/V$(MODULE)
+NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
+
+# endif
+
+
+
+.PHONY:sim
+sim:$(VSRCS) $(CSRCS)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "Simulation completed"
-
-.PHONY: verilate
-verilate: .stamp.verilate
-
-.PHONY: build
-build: obj_dir/V$(MODULE)
-
-.PHONY: wave
-wave: waveform.fst
-	@echo
-	@echo "### WAVES ###"
-	gtkwave waveform.fst
-
-waveform.fst: ./obj_dir/V$(MODULE)
-	@echo
-	@echo "### SIMULATING ###"
-	@./obj_dir/V$(MODULE)
-
-./obj_dir/V$(MODULE): .stamp.verilate
-	@echo
-	@echo "### BUILDING SIM ###"
-	$(MAKE) -C obj_dir -f V$(MODULE).mk V$(MODULE)
-
-# 修改verilate目标
-.stamp.verilate: $(VSRCS) $(CSRCS)
-	@echo
-	@echo "### VERILATING ###"
-	verilator -Wno-STMTDLY -Wno-MODDUP --trace --trace-fst --top-module $(MODULE) \
-		-cc $(VSRCS) --exe $(CSRCS) \
-		-CFLAGS "-std=c++17 -O3"  # 新增C++17支持
-	@touch .stamp.verilate
-
-.PHONY: lint
-lint: $(MODULE).v
-	verilator --lint-only $(MODULE).v
-
-.PHONY: clean
-clean:
-	rm -rf .stamp.*
+	rm -rf .stamp.*;
 	rm -rf ./obj_dir
-	rm -rf waveform.fst
+	rm -rf waveform.vcd
+	@echo "### VERILATING ###"
+	verilator --trace --top-module $(MODULE) -cc $(VSRCS) --exe $(CSRCS) -I$(INC_PATH)
+	@echo "LIBS +=$(LIBS)" >> ./obj_dir/V$(MODULE).mk  
+	@echo "### BUILDING SIM ###"
+	make -C obj_dir -f V$(MODULE).mk V$(MODULE) $(DIFF_REF_PATH) -o $(abspath $(BINARY))
+	@echo "### SIMULATING ###"
+	@$(NEMU_EXEC)
 	
+.PHONY:wave
+wave: 
+	@echo "### WAVES ###"
+	gtkwave waveform.vcd
+
