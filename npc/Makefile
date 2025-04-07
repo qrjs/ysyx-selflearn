@@ -1,4 +1,4 @@
-include ../Makefile
+include $(YSYX_HOME)/Makefile
 MODULE=rv32
 CSRCS = $(shell find $(abspath ./csrc) -name "*.cpp")
 #VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
@@ -28,7 +28,7 @@ NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
 .PHONY:sim
 sim:$(VSRCS) $(CSRCS)
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+	$(call git_commit, "NPC Simulation Update")   # DO NOT REMOVE THIS LINE!!!
 	rm -rf .stamp.*;
 	rm -rf ./obj_dir
 	rm -rf waveform.vcd

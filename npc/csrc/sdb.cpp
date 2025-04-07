@@ -196,7 +196,7 @@ static char* rl_gets()
         line_read = NULL;
     }
 
-    line_read = readline("(ysyx)--" ANSI_FG_GREEN "npc@uae: " ANSI_NONE);
+    line_read = readline(ANSI_FG_MAGENTA"(npc)--" ANSI_FG_GREEN "ysyx@jrq: " ANSI_NONE);
     if (line_read && *line_read) 
         add_history(line_read);
 
@@ -243,7 +243,7 @@ void sdb_mainloop()
         }
     }
 
-    if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
+    if (i == NR_CMD) { printf(ANSI_FG_RED"unknown command '%s',please try another \n", cmd); }
   }
 }
 
