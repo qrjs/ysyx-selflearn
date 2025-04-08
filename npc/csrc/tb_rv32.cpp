@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "Vrv32.h"
-#include "verilated_vcd_c.h"
+#include "verilated_fst_c.h"
 #include "Vrv32__Dpi.h"
 #include "svdpi.h"
 #include "../include/common.h"
@@ -12,7 +12,7 @@
 #include "Vrv32_register_file.h"
 
 
-VerilatedVcdC* tfp = new VerilatedVcdC(); //导出vcd波形需要加此语句
+VerilatedFstC* tfp = new VerilatedFstC(); //导出vcd波形需要加此语句
 Vrv32 *top = new Vrv32("top");
 vluint64_t main_time = 0;  //initial 仿真时间
 
@@ -49,7 +49,7 @@ extern void ebreak(int station, int inst, char unit)
   printf("tv_rv32.cpp ebreak \n");
   if(Verilated::gotFinish())
     return;
-  Log( "maintime = %ld, state = %d, pc = 0x%08x, inst = 0x%08x", main_time, npc_state.state, top->rv32->pc, top->rv32->inst);
+  //Log( "maintime = %ld, state = %d, pc = 0x%08x, inst = 0x%08x", main_time, npc_state.state, top->rv32->pc, top->rv32->inst);
 
   //虽然波形图上inst随pc同时变化，但通过打印二者会发现inst会在pc变化之后才改变（这是因为二者都发生变化了之后才输出至波形图的）
   //然而，这个延时会导致decode错误，然后调用了 “ebreak(`ABORT, inst);”
@@ -140,7 +140,7 @@ static void init_verilator(void)
   Verilated::traceEverOn(true); //导出vcd波形需要加此语句
 
   top->trace(tfp, 0);
-  tfp->open("waveform.vcd"); //打开vcd
+  tfp->open("waveform.fst"); //打开fst
 
   reset();  //复位
 }

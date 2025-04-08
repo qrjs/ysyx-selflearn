@@ -31,9 +31,9 @@ sim:$(VSRCS) $(CSRCS)
 	$(call git_commit, "NPC Simulation Update")   # DO NOT REMOVE THIS LINE!!!
 	rm -rf .stamp.*;
 	rm -rf ./obj_dir
-	rm -rf waveform.vcd
+	rm -rf waveform.fst
 	@echo "### VERILATING ###"
-	verilator --trace --top-module $(MODULE) -cc $(VSRCS) --exe $(CSRCS) -I$(INC_PATH)
+	verilator --trace-fst --top-module $(MODULE) -cc $(VSRCS) --exe $(CSRCS) -I$(INC_PATH)
 	@echo "LIBS +=$(LIBS)" >> ./obj_dir/V$(MODULE).mk  
 	@echo "### BUILDING SIM ###"
 	make -C obj_dir -f V$(MODULE).mk V$(MODULE) $(DIFF_REF_PATH) -o $(abspath $(BINARY))
@@ -43,5 +43,5 @@ sim:$(VSRCS) $(CSRCS)
 .PHONY:wave
 wave: 
 	@echo "### WAVES ###"
-	gtkwave waveform.vcd
+	gtkwave waveform.fst
 
