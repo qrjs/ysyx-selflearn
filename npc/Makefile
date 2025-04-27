@@ -26,8 +26,8 @@ NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
 
 
-.PHONY:sim
-sim:$(VSRCS) $(CSRCS)
+.PHONY:run
+run:$(VSRCS) $(CSRCS)
 	$(call git_commit, "NPC Simulation Update")   # DO NOT REMOVE THIS LINE!!!
 	rm -rf .stamp.*;
 	rm -rf ./obj_dir

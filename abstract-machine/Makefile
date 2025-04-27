@@ -89,7 +89,7 @@ CFLAGS   += -O2 -MMD -Wall -Werror $(INCFLAGS) \
             -Wno-main -U_FORTIFY_SOURCE -fvisibility=hidden
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  += -MMD $(INCFLAGS)
-LDFLAGS  += -z noexecstack $(addprefix -T, $(LDSCRIPTS))
+NPC_LDFLAGS  += -z noexecstack $(addprefix -T, $(LDSCRIPTS))
 
 ## 4. Arch-Specific Configurations
 
@@ -129,7 +129,7 @@ $(IMAGE).elf: $(LINKAGE) $(LDSCRIPTS)
 ifneq ($(filter $(ARCH),native),)
 	@$(CXX) -o $@ -Wl,--whole-archive $(LINKAGE) -Wl,-no-whole-archive $(LDFLAGS_CXX)
 else
-	@$(LD) $(LDFLAGS) -o $@ --start-group $(LINKAGE) --end-group
+	@$(LD) $(NPC_LDFLAGS) -o $@ --start-group $(LINKAGE) --end-group
 endif
 
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
