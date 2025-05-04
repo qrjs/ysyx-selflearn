@@ -16,12 +16,7 @@ CFLAGS  += -fpie $(shell sdl2-config --cflags)
 ASFLAGS += -fpie -pie
 comma = ,
 LDFLAGS_CXX = $(addprefix -Wl$(comma), $(NPC_LDFLAGS)) -pie -ldl $(shell sdl2-config --libs)
-image:
-	@echo + LD "->" $(IMAGE_REL)
-	# 链接生成 NPC 可执行程序，使用 NPC_LDFLAGS（不含 -melf 选项）
-	@g++ -pie -o $(IMAGE) \
-	    -Wl,--whole-archive $(LINKAGE) -Wl,-no-whole-archive $(LDFLAGS_CXX) \
-	    -lSDL2 -ldl
+
 run: image
 	$(IMAGE).elf
 
