@@ -6,7 +6,7 @@
 
 
 /********extern functions or variables********/
-extern void     cpu_exec(uint64_t n); 
+extern void     cpu_exec(uint64_t n, bool force_display = false); 
 extern void     regs_display(); 
 extern void     init_regex();
 extern void     single_reg_display(char *reg_name); 
@@ -66,8 +66,11 @@ static int cmd_si(char *args)
         //extract the number by converting  char* into int
         sscanf(buff, "%d", &inst_num);
     
+    // 在单步执行模式下始终强制显示执行信息
+    // 无需更改QUIET_MODE，直接使用force_display标志
+    cpu_exec(inst_num, true);
+    
     _Log(ANSI_FG_BLUE "%d instruction(s) excuted.\n" ANSI_NONE, inst_num);
-    cpu_exec(inst_num);
     return 0;
 }
 

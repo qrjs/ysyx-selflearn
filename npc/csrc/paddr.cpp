@@ -68,7 +68,9 @@ static inline void out_of_bound(paddr_t addr) {
 
 word_t pmem_r(paddr_t addr, int len) 
 {
+#ifndef QUIET_MODE
   printf("paddr.cpp pmem_r\n");
+#endif
   if(in_pmem(addr))   //check if within the bound
 #ifdef CONFIG_MTRACE
   {
@@ -88,7 +90,9 @@ word_t pmem_r(paddr_t addr, int len)
 
 void pmem_w(paddr_t addr, int len, word_t data) 
 {
+#ifndef QUIET_MODE
   printf("paddr.cpp pmem_w\n");
+#endif
   if(in_pmem(addr))   //check if within the bound
   {
 #ifdef CONFIG_MTRACE

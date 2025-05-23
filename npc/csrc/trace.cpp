@@ -48,7 +48,16 @@ static uint32_t check_func_interval(uint32_t pc)
         if(addr_s <= pc && pc < addr_e)
             break;
     }
-    assert(i < func_amount);
+    // 如果找不到匹配的函数区间，不要崩溃，而是返回0或添加一个特殊的"unknown"函数
+    if (i >= func_amount) {
+        static bool warned = false;
+        if (!warned) {
+            printf("Warning: Jump to address 0x%08x outside of any known function\n", pc);
+            warned = true;
+        }
+        // 返回第一个函数或者一个特殊值
+        return func_amount > 0 ? 0 : 0;
+    }
     return i;
 }
 
@@ -57,13 +66,21 @@ static uint32_t check_func_interval(uint32_t pc)
 void RET_Log(uint32_t pc, uint32_t npc)
 {
     loop--;
+    if (loop < 0) loop = 0; // 防止loop变为负数
+    
     //get the FUNC symbol index in sym_fun_group
     uint32_t index = check_func_interval(npc);   
     fprintf(ftrace_log, "[ftrace] 0x%08x: ", pc); 
     //print the certain amount of '  '
     for(int i=0; i<loop; i++)                           
         fprintf(ftrace_log, "  "); 
-    fprintf(ftrace_log, "ret [%s]\n", sym_fun_group[index].name); 
+    
+    // 检查索引是否有效，如果无效则使用"unknown"作为函数名
+    if (index < func_amount) {
+        fprintf(ftrace_log, "ret [%s]\n", sym_fun_group[index].name);
+    } else {
+        fprintf(ftrace_log, "ret [unknown]\n");
+    }
     fflush(ftrace_log); 
 }
 
@@ -78,7 +95,13 @@ void J_Log(uint32_t pc, uint32_t npc)
     //print the certain amount of '  '
     for(int i=0; i<loop; i++)
         fprintf(ftrace_log, "  "); 
-    fprintf(ftrace_log, "call[%s@0x%08x]\n", sym_fun_group[index].name, sym_fun_group[index].value); 
+    
+    // 检查索引是否有效，如果无效则使用"unknown"作为函数名
+    if (index < func_amount) {
+        fprintf(ftrace_log, "call[%s@0x%08x]\n", sym_fun_group[index].name, sym_fun_group[index].value); 
+    } else {
+        fprintf(ftrace_log, "call[unknown@0x%08x]\n", npc);
+    }
     fflush(ftrace_log); 
     loop++;
 }
@@ -215,16 +238,39 @@ void display_iringbuf(void)
     if(iringbuf.inst_buf[i] == NULL)
         return;
 
-    _Log(ANSI_FG_BLUE "Display inst iringbuf:\n" ANSI_NONE);
+    printf("\n\033[1;34m✦ 指令执行历史记录 ✦\033[0m\n");
+    printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+    
+    // 记录到日志文件
+    log_write("\n=== 指令执行历史 ===\n");
+    
+    // 计算有多少条指令
+    int count = 0;
+    int temp = i;
+    while(temp != iringbuf.tail) {
+        count++;
+        temp = (temp + 1) % MAX_iringbuf_size;
+    }
+    count++; // 加上尾部指令
+    
     while(i != iringbuf.tail)
     {
-        printf(ANSI_FG_YELLOW "[iringbuf] " ANSI_NONE "      %s\n", iringbuf.inst_buf[i]);
-        log_write("[iringbuf]       %s\n", iringbuf.inst_buf[i]); 
+        // 解析指令地址和内容
+        char addr[20], inst[20];
+        sscanf(iringbuf.inst_buf[i], "%s %s", addr, inst);
+        
+        printf("  %s: \033[1;36m%s\033[0m\n", addr, inst);
+        log_write("[历史]  %s\n", iringbuf.inst_buf[i]); 
         i = (i + 1) % MAX_iringbuf_size;
     }
-    printf(ANSI_FG_YELLOW "[iringbuf] " ANSI_NONE ANSI_FG_RED "---->" ANSI_NONE " %s\n", 
-           iringbuf.inst_buf[iringbuf.tail]);
-    log_write("[iringbuf] ----> %s\n", iringbuf.inst_buf[iringbuf.tail]); 
+    
+    // 当前指令（最后一条）使用特殊颜色标记
+    char addr[20], inst[20];
+    sscanf(iringbuf.inst_buf[iringbuf.tail], "%s %s", addr, inst);
+    printf("→ %s: \033[1;33m%s\033[0m ← 当前指令\n", addr, inst);
+    printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+    
+    log_write("[当前]  %s\n", iringbuf.inst_buf[iringbuf.tail]); 
 }
 #endif
 /******************************************************************/

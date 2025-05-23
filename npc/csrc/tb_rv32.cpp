@@ -85,7 +85,8 @@ extern void ebreak(int station, int inst, char unit)
 
 extern int pmem_read(int raddr)
 {
-  printf("tv_rv32.cpp pmem_read, maintime is %d,raddr is 0x%x \n",main_time,raddr);
+  // 仅在调试模式下输出内存读取信息
+  // printf("Memory read: addr=0x%x\n", raddr);
   static int data = 0xdeadbeaf;
 
   if(main_time >= start_time)
@@ -119,7 +120,9 @@ void pmem_write(int waddr, int wdata, char wmask)
 
 void single_cycle(void) 
 {
+#ifndef QUIET_MODE
   printf("tb_rv32.cpp single_cycle \n");
+#endif
   if(!Verilated::gotFinish())
   { 
     top->clk = 1; top->eval(); tfp->dump(main_time);  main_time++; 
@@ -153,8 +156,12 @@ int main(int argc, char *argv[])
   /* Initialize the verilator. */
   init_verilator();
 
+#ifdef CONFIG_DIFFTEST
   /* Initialize differential testing. */
-  //init_difftest(diff_so_file, img_size, difftest_port);
+  if (diff_so_file != NULL) {
+    init_difftest(diff_so_file, img_size, difftest_port);
+  }
+#endif
 
   /* Receive commands from user. */
   sdb_mainloop();
