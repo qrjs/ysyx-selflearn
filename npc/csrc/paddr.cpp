@@ -11,23 +11,41 @@ extern vluint64_t main_time;
 
 
 uint8_t pmem[PMEM_SIZE] PG_ALIGN = {};
-static const word_t img [] = {
-  0xffc10113,    //addi	sp,sp,-4
-  0x06400593,    //li	  a1,100
-  0x06458613,    //addi	a2,a1,100
-  0x0c860693,    //addi	a3,a2,200
-  0xed468713,    //addi	a4,a3,-300
-  0xe7070793,    //addi	a5,a4,-400
-  0x80178813,    //addi	a6,a5,-2047
-  0x7fa80893,    //addi	a7,a6,2042
-  0x7fa88893,    //addi	a7,a7,2042
-  0x00100073,    //ebreak
-  0x06458613,    //addi	a2,a1,100
-  0x0c860693,    //addi	a3,a2,200
-  0x00000297,    // auipc t0,0
-  0x00000513,    //	li	a0,0
-  0x00100073,    // ebreak 
-  0xdeadbeef,    // some data
+static const word_t img[] = {
+  // 各种类型的RISC-V指令测试程序（主要是算术逻辑指令）
+  
+  // I型指令测试: addi, slti, xori, ori, andi, slli, srli, srai
+  0x00500113,    // addi sp, zero, 5      ; sp = 5 (设置栈指针)
+  0x06400593,    // addi a1, zero, 100    ; a1 = 100
+  0x06458613,    // addi a2, a1, 100      ; a2 = a1 + 100 = 200
+  0x0020a713,    // slti a4, a1, 2        ; a4 = (a1 < 2) ? 1 : 0 = 0
+  0xff35c793,    // xori a5, a1, -13      ; a5 = a1 ^ (-13) 
+  0x1ff7f813,    // andi a6, a5, 0x1ff    ; a6 = a5 & 0x1ff
+  0x00159893,    // slli a7, a1, 1        ; a7 = a1 << 1 = 200
+  0x0015d913,    // srli s2, a1, 1        ; s2 = a1 >> 1 = 50
+  0x4015d993,    // srai s3, a1, 1        ; s3 = a1 >> 1 = 50 (算术)
+  
+  // R型指令测试: add, sub, sll, slt, sltu, xor, srl, sra, or, and
+  0x00c58533,    // add a0, a1, a2        ; a0 = a1 + a2 = 300
+  0x40c58a33,    // sub s4, a1, a2        ; s4 = a1 - a2 = -100
+  0x00159ab3,    // sll s5, a1, a6        ; s5 = a1 << a6 
+  0x00c5ab33,    // slt s6, a1, a2        ; s6 = (a1 < a2) ? 1 : 0 = 1
+  0x00c5bbb3,    // sltu s7, a1, a2       ; s7 = (a1 <u a2) ? 1 : 0 = 1
+  0x00c5cc33,    // xor s8, a1, a2        ; s8 = a1 ^ a2
+  0x00c5dcb3,    // srl s9, a1, a2        ; s9 = a1 >> a2
+  0x40c5dd33,    // sra s10, a1, a2       ; s10 = a1 >> a2 (算术)
+  0x00c5edb3,    // or s11, a1, a2        ; s11 = a1 | a2
+  0x00c5fe33,    // and t3, a1, a2        ; t3 = a1 & a2
+  
+  // U型指令测试: lui, auipc
+  0x000010b7,    // lui ra, 1             ; ra = 1 << 12 = 4096
+  0x00001137,    // lui sp, 1             ; sp = 1 << 12 = 4096
+  0x00001097,    // auipc ra, 1           ; ra = pc + (1 << 12)
+  
+  // J型和B型指令测试 (小心使用，避免跳转到非法区域)
+  0x00000513,    // addi a0, zero, 0      ; a0 = 0
+  0x00100073,    // ebreak                ; 终止程序
+  0xdeadbeef,    // some data             ; 一些数据
 };
 
 

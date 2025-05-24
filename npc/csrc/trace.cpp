@@ -209,7 +209,7 @@ void load_elf(void)
 
 struct IRINGBUF
 {
-    char inst_buf[MAX_iringbuf_size][64];
+    char inst_buf[MAX_iringbuf_size][128]; // 增加到128字节，以容纳更长的反汇编信息
     int head, tail;
 };
 
@@ -255,19 +255,63 @@ void display_iringbuf(void)
     
     while(i != iringbuf.tail)
     {
-        // 解析指令地址和内容
-        char addr[20], inst[20];
-        sscanf(iringbuf.inst_buf[i], "%s %s", addr, inst);
+        // 提取指令的各个部分: 地址、指令编码和反汇编结果
+        char addr[20], inst[20], disasm[128];
+        // 提取前两部分（地址和指令编码）
+        char* disasm_start = strchr(iringbuf.inst_buf[i], ' '); // 找到第一个空格
+        if (disasm_start) {
+            disasm_start = strchr(disasm_start + 1, ' '); // 找到第二个空格
+            if (disasm_start) {
+                // 提取地址和指令编码
+                *disasm_start = '\0'; // 临时截断字符串
+                sscanf(iringbuf.inst_buf[i], "%s %s", addr, inst);
+                *disasm_start = ' '; // 恢复字符串
+                
+                // 复制反汇编部分
+                strcpy(disasm, disasm_start + 1);
+                
+                // 打印完整格式
+                printf("  %s: \033[1;36m%s\033[0m \033[1;32m%s\033[0m\n", addr, inst, disasm);
+            } else {
+                // 如果没有反汇编部分，使用原来的格式
+                sscanf(iringbuf.inst_buf[i], "%s %s", addr, inst);
+                printf("  %s: \033[1;36m%s\033[0m\n", addr, inst);
+            }
+        } else {
+            // 格式不符合预期，直接打印原始字符串
+            printf("  %s\n", iringbuf.inst_buf[i]);
+        }
         
-        printf("  %s: \033[1;36m%s\033[0m\n", addr, inst);
         log_write("[历史]  %s\n", iringbuf.inst_buf[i]); 
         i = (i + 1) % MAX_iringbuf_size;
     }
     
     // 当前指令（最后一条）使用特殊颜色标记
-    char addr[20], inst[20];
-    sscanf(iringbuf.inst_buf[iringbuf.tail], "%s %s", addr, inst);
-    printf("→ %s: \033[1;33m%s\033[0m ← 当前指令\n", addr, inst);
+    char addr[20], inst[20], disasm[128];
+    // 提取前两部分（地址和指令编码）
+    char* disasm_start = strchr(iringbuf.inst_buf[iringbuf.tail], ' '); // 找到第一个空格
+    if (disasm_start) {
+        disasm_start = strchr(disasm_start + 1, ' '); // 找到第二个空格
+        if (disasm_start) {
+            // 提取地址和指令编码
+            *disasm_start = '\0'; // 临时截断字符串
+            sscanf(iringbuf.inst_buf[iringbuf.tail], "%s %s", addr, inst);
+            *disasm_start = ' '; // 恢复字符串
+            
+            // 复制反汇编部分
+            strcpy(disasm, disasm_start + 1);
+            
+            // 打印完整格式，当前指令用黄色高亮
+            printf("→ %s: \033[1;33m%s\033[0m \033[1;33m%s\033[0m ← 当前指令\n", addr, inst, disasm);
+        } else {
+            // 如果没有反汇编部分，使用原来的格式
+            sscanf(iringbuf.inst_buf[iringbuf.tail], "%s %s", addr, inst);
+            printf("→ %s: \033[1;33m%s\033[0m ← 当前指令\n", addr, inst);
+        }
+    } else {
+        // 格式不符合预期，直接打印原始字符串
+        printf("→ %s ← 当前指令\n", iringbuf.inst_buf[iringbuf.tail]);
+    }
     printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
     
     log_write("[当前]  %s\n", iringbuf.inst_buf[iringbuf.tail]); 

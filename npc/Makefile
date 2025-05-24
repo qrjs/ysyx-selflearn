@@ -4,11 +4,9 @@ include $(YSYX_HOME)/Makefile
 # 顶层模块名称
 MODULE=rv32
 
-# 查找所有C++源文件，排除我们将替换的文件
-CSRCS = $(shell find $(abspath ./csrc) -name "*.cpp" -not -name "tb_rv32.cpp" -not -name "tb_rv32_new.cpp")
-# 添加我们的自定义文件
-CSRCS += $(abspath ./csrc/ebreak_new.cpp)
-CSRCS += $(abspath ./csrc/tb_rv32_new.cpp)
+# 查找所有C++源文件
+CSRCS = $(shell find $(abspath ./csrc) -name "*.cpp")
+
 
 # 查找所有Verilog源文件
 #VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")

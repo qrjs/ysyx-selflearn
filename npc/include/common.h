@@ -56,6 +56,6 @@
 // 完全注释掉以禁用DiffTest
 // #define CONFIG_DIFFTEST 1
 
-#define MAX_iringbuf_size  20
+#define MAX_iringbuf_size  50
 
 #endif
